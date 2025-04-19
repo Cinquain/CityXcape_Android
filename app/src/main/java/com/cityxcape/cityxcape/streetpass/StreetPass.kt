@@ -20,6 +20,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cityxcape.cityxcape.components.SelfieBubble
+import com.cityxcape.cityxcape.components.StampView
 import com.cityxcape.cityxcape.components.StreetPassBackground
 
 @Composable
@@ -49,6 +50,10 @@ fun StreetPass() {
                 fontSize = 25.sp,
                 fontWeight = FontWeight.Light
                 )
+
+            Spacer(modifier = Modifier.height(50.dp))
+
+            StampView(name = "Parlor Bar")
         }
     }
 }
@@ -58,7 +63,7 @@ fun Header() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 30.dp)
+            .padding(start = 20.dp)
             .padding(top = 20.dp)
         ,
         horizontalArrangement = Arrangement.Start
