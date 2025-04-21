@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "32981840497",
+    "project_id": "cityxcape-70313",
+    "storage_bucket": "cityxcape-70313.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:32981840497:android:50adaedfdfbd81db6aa1d0",
+        "android_client_info": {
+          "package_name": "com.cityxcape.cityxcape"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "32981840497-63fm9lq9otcd7igqv1ib6othrb6ntinr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.cityxcape.cityxcape",
+            "certificate_hash": "22d2c1c24a93e8344a4e333557aa16dc252a6a22"
+          }
+        },
+        {
+          "client_id": "32981840497-evktbgi9regb52c95ehpveuf1ech0u93.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_Q81HtZ0fZDfoN65KLuh14dk-wOOa5aM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "32981840497-evktbgi9regb52c95ehpveuf1ech0u93.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "32981840497-9ecpjr57cdtbg67f2uiiat58cvv9t8o5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.cityXcape.CityXcape8"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

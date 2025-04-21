@@ -53,7 +53,7 @@ fun SignUp() {
             )
             Text(
                 text = "Create an Account",
-                fontWeight = FontWeight.Thin,
+                fontWeight = FontWeight.Light,
                 color = Color.White,
                 fontSize = 20.sp
             )
