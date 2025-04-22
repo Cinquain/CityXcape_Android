@@ -1,4 +1,4 @@
-package com.cityxcape.cityxcape.discover
+package com.cityxcape.cityxcape.checkin
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
@@ -16,8 +15,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
@@ -26,16 +23,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import androidx.compose.runtime.*
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
-import com.cityxcape.cityxcape.authentication.SignUp
-import java.nio.file.WatchEvent
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.cityxcape.cityxcape.utilities.CheckInScreen
 
 @Composable
-fun Discover() {
+fun Checkin(navController: NavHostController, vm: CheckinViewModel) {
 
     Column(
         modifier = Modifier
@@ -63,7 +58,9 @@ fun Discover() {
         )
         Spacer(modifier = Modifier.height(10.dp))
         Button(
-            onClick = {  },
+            onClick = {
+                navController.navigate(CheckInScreen.Lounge.route)
+            },
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF59b4d)),
             modifier = Modifier
                 .width(200.dp)
@@ -86,5 +83,8 @@ fun Discover() {
 @Preview(showBackground = true)
 @Composable
 fun DiscoverPreview() {
-    Discover()
+    Checkin(
+        navController = rememberNavController(),
+        vm = CheckinViewModel()
+    )
 }

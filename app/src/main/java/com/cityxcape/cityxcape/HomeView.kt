@@ -72,7 +72,7 @@ fun RowScope.AddItem(
         icon = {
             Icon(
                 painter = when(screen) {
-                    is TabScreen.Checkin -> painterResource(R.drawable.checkin)
+                    is TabScreen.Checkin -> painterResource(R.drawable.qrcode)
                     is TabScreen.Connections -> painterResource(R.drawable.hexagons3)
                     is TabScreen.Messages -> painterResource(R.drawable.chatbubble)
                     is TabScreen.StreetPass -> painterResource(R.drawable.idcard)

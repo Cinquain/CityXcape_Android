@@ -26,3 +26,19 @@ sealed class TabScreen(
         title = "StreetPass"
     )
 }
+
+sealed class CheckInScreen(
+    val route: String
+) {
+    object Checkin: CheckInScreen(
+        route = "checkin"
+    )
+
+    object Lounge: CheckInScreen(
+        route = "digitalLounge"
+    )
+
+    object Hunt: CheckInScreen(
+        route = "scavengerHunt"
+    )
+}
