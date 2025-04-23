@@ -47,8 +47,8 @@ data class User(
 
             var user2 = User(
                 id = "PlMt3eOkyseQIG9VDct6",
-                username = "Adam",
-                imageUrl = "https://firebasestorage.googleapis.com/v0/b/cityxcape-70313.appspot.com/o/Users%2FJAv8CbZcZDUKNQx0PeGusp8cINC2%2FprofileImage?alt=media&token=eb587fbc-3461-4060-b6fb-73c0d10b7749",
+                username = "Sandra",
+                imageUrl = "https://firebasestorage.googleapis.com/v0/b/cityxcape-70313.appspot.com/o/Users%2FEVTU961bfeCZBEBzrBL0%2FSandra.png?alt=media&token=07058b02-642b-44e4-a0ef-3548b250787e",
                 gender = true,
                 city = "Los Angeles",
                 streetCred = 50,

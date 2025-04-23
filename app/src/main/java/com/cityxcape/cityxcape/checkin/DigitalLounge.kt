@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -30,10 +32,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.cityxcape.cityxcape.components.UserBubble
 import com.cityxcape.cityxcape.models.User
+import java.nio.file.WatchEvent
 
 
 @Composable
 fun DigitalLounge(navController: NavHostController, vm: CheckinViewModel) {
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -45,7 +49,15 @@ fun DigitalLounge(navController: NavHostController, vm: CheckinViewModel) {
         verticalArrangement = Arrangement.Center
     ) {
         Header()
-        UserRow(user = User.guest())
+
+        Spacer(modifier = Modifier.height(50.dp))
+
+        LazyColumn {
+            items(vm.users) { user ->
+                UserRow(user)
+            }
+        }
+
         Spacer(modifier = Modifier.fillMaxSize())
     }
 }
@@ -79,7 +91,7 @@ fun Header() {
 @Composable
 fun UserRow(user: User) {
     Row(
-        modifier = Modifier.fillMaxWidth().padding(top = 100.dp, start = 10.dp),
+        modifier = Modifier.fillMaxWidth().padding(top = 30.dp, start = 10.dp),
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically
     ) {
