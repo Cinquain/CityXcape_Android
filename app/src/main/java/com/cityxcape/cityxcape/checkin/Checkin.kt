@@ -1,5 +1,6 @@
 package com.cityxcape.cityxcape.checkin
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,10 +12,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.Button
+import androidx.compose.runtime.*
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
@@ -28,10 +32,12 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.cityxcape.cityxcape.utilities.CheckInScreen
+import com.cityxcape.cityxcape.utilities.QRCodeScanner
 
 @Composable
 fun Checkin(navController: NavHostController, vm: CheckinViewModel) {
 
+    var showScan by remember { mutableStateOf(false) }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -42,39 +48,46 @@ fun Checkin(navController: NavHostController, vm: CheckinViewModel) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Image(
-            painter = painterResource(id = com.cityxcape.cityxcape.R.drawable.qrcode),
-            contentDescription = "QR Code",
-            contentScale = ContentScale.Fit,
-            modifier = Modifier
-                .height(220.dp)
-        )
+       if (showScan) {
+           QRCodeScanner { code ->
+               navController.navigate(CheckInScreen.Lounge.route)
+           }
+       } else {
+           Image(
+               painter = painterResource(id = com.cityxcape.cityxcape.R.drawable.qrcode),
+               contentDescription = "QR Code",
+               contentScale = ContentScale.Fit,
+               modifier = Modifier
+                   .height(220.dp)
+           )
 
-        Text(
-            text = "Scan QR code",
-            color = Color.White,
-            fontWeight = FontWeight.Thin,
-            fontSize = 20.sp
-        )
-        Spacer(modifier = Modifier.height(10.dp))
-        Button(
-            onClick = {
-                navController.navigate(CheckInScreen.Lounge.route)
-            },
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF59b4d)),
-            modifier = Modifier
-                .width(200.dp)
-                .height(40.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Filled.Notifications,
-                contentDescription = "Bell Icon",
-                modifier = Modifier.size(20.dp),
-                tint = Color.Black
-            )
+           Text(
+               text = "Scan QR code",
+               color = Color.White,
+               fontWeight = FontWeight.Thin,
+               fontSize = 20.sp
+           )
+           Spacer(modifier = Modifier.height(10.dp))
+           Button(
+               onClick = {
+                    showScan = true
+               },
+               colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF59b4d)),
+               modifier = Modifier
+                   .width(200.dp)
+                   .height(40.dp)
+           ) {
+               Icon(
+                   imageVector = Icons.Filled.Notifications,
+                   contentDescription = "Bell Icon",
+                   modifier = Modifier.size(20.dp),
+                   tint = Color.Black
+               )
 
-            Text("Check-In", color = Color.Black, fontWeight = FontWeight.Light)
-        }
+               Text("Check-In", color = Color.Black, fontWeight = FontWeight.Light)
+           }
+       }
+
 
 
     }

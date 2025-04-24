@@ -109,7 +109,6 @@ dependencies {
 
     //Goole BarCode Scanning ML Kit
     implementation("com.google.mlkit:barcode-scanning:17.3.0")
-    implementation("com.google.accompanist:accompanist-permissions:0.31.0")
 
     // CameraX
     implementation("androidx.camera:camera-core:1.3.0")

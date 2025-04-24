@@ -33,41 +33,11 @@ class MainActivity : ComponentActivity() {
 }
 
 
-@Composable
-fun TestScreen() {
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .paint(
-            painter = painterResource(R.drawable.digital_lounge),
-            contentScale = ContentScale.Crop
-        ),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    )
-    {
-        SelfieBubble(
-            imageUrl = "https://firebasestorage.googleapis.com/v0/b/cityxcape-70313.appspot.com/o/Users%2FEVTU961bfeCZBEBzrBL0%2FSandra.png?alt=media&token=07058b02-642b-44e4-a0ef-3548b250787e",
-            size = 300.dp
-        )
-
-        Spacer(modifier = Modifier.height(50.dp))
-
-        StampView(name = "Graffiti Pier")
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
 
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     CityXcapeTheme {
-        Greeting("Android")
+        HomeView()
     }
 }
