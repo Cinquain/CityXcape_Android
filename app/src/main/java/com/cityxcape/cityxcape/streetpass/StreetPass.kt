@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,10 +38,11 @@ fun StreetPass() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Header()
-            Spacer(modifier = Modifier.height(100.dp))
+            Spacer(modifier = Modifier.height(60.dp))
             SelfieBubble(
                 imageUrl = "https://firebasestorage.googleapis.com/v0/b/cityxcape-70313.appspot.com/o/Users%2FNwE1WVJY83RcQw4tttAkZ0Vg53Y2%2FprofileImage?alt=media&token=f1a4fd4d-f255-46a3-9d9a-89e7500b9cd1",
-                size = 300.dp
+                size = 300.dp,
+                onClick = {}
             )
 
             Spacer(modifier = Modifier.height(15.dp))
@@ -51,7 +53,7 @@ fun StreetPass() {
                 fontWeight = FontWeight.Light
                 )
 
-            Spacer(modifier = Modifier.height(50.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             StampView(name = "Parlor Bar")
         }

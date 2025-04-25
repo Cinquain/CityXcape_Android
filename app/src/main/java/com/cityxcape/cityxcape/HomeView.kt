@@ -1,6 +1,7 @@
 package com.cityxcape.cityxcape
 
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
@@ -49,6 +50,7 @@ fun BottomBar(navController: NavHostController) {
     val currentDestination = navBackStackEntry?.destination
 
     BottomNavigation(
+        modifier = Modifier.navigationBarsPadding(),
         backgroundColor = Color.Black,
         contentColor = Color.White
     ) {

@@ -7,6 +7,7 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -28,7 +29,8 @@ import coil3.request.crossfade
 @Composable
 fun SelfieBubble(
     imageUrl: String,
-    size: Dp
+    size: Dp,
+    onClick: () -> Unit
 ) {
     val infineTransition = rememberInfiniteTransition(label = "Pulse")
     val pulseScale by infineTransition.animateFloat(
@@ -46,6 +48,7 @@ fun SelfieBubble(
         Box(
             modifier = Modifier
                 .size(size)
+                .clickable(onClick = onClick)
                 .graphicsLayer {
                     scaleX = pulseScale
                     scaleY = pulseScale

@@ -7,6 +7,7 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -29,7 +30,8 @@ import androidx.compose.ui.graphics.Color
 @Composable
 fun UserBubble(
     imageUrl: String,
-    size: Dp
+    size: Dp,
+    onClick: () -> Unit
 ) {
     val infineTransition = rememberInfiniteTransition(label = "Pulse")
     val pulseScale by infineTransition.animateFloat(
@@ -47,11 +49,12 @@ fun UserBubble(
         Box(
             modifier = Modifier
                 .size(size)
+                .clickable(onClick = onClick)
                 .graphicsLayer {
                     scaleX = pulseScale
                     scaleY = pulseScale
                 }
-                .background(Color(0xFFF59b4d).copy(alpha = 0.3f), shape = CircleShape)
+                .background(Color(0xFFF59b4d).copy(alpha = 0.3f), shape = CircleShape),
         )
 
         Box(

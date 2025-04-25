@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -15,8 +16,14 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Divider
+import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.Text
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
@@ -32,11 +39,15 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.cityxcape.cityxcape.components.UserBubble
 import com.cityxcape.cityxcape.models.User
+import com.cityxcape.cityxcape.streetpass.PublicStreetPass
 import java.nio.file.WatchEvent
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DigitalLounge(navController: NavHostController, vm: CheckinViewModel) {
+
+    val sheetState = rememberModalBottomSheetState( skipPartiallyExpanded = true)
 
     Column(
         modifier = Modifier
@@ -54,11 +65,25 @@ fun DigitalLounge(navController: NavHostController, vm: CheckinViewModel) {
 
         LazyColumn {
             items(vm.users) { user ->
-                UserRow(user)
+                UserRow(user, vm)
             }
         }
 
         Spacer(modifier = Modifier.fillMaxSize())
+
+        if (vm.showSP) {
+            ModalBottomSheet(
+                onDismissRequest = {vm.hideStreetPass()},
+                modifier = Modifier.fillMaxSize(),
+                sheetState = sheetState
+            ) {
+                PublicStreetPass(user = vm.currentUser!!)
+            }
+        }
+
+        LaunchedEffect(Unit) {
+            sheetState.expand()
+        }
     }
 }
 
@@ -89,7 +114,7 @@ fun Header() {
 
 
 @Composable
-fun UserRow(user: User) {
+fun UserRow(user: User, vm: CheckinViewModel) {
     Row(
         modifier = Modifier.fillMaxWidth().padding(top = 30.dp, start = 10.dp),
         horizontalArrangement = Arrangement.Start,
@@ -102,7 +127,11 @@ fun UserRow(user: User) {
 
            UserBubble(
                imageUrl = user.imageUrl,
-               size = 100.dp
+               size = 100.dp,
+               onClick = {
+                   vm.setUser(user)
+                   vm.showStreetPass()
+               }
            )
 
            Text(
@@ -121,7 +150,10 @@ fun UserRow(user: User) {
         ) {
 
             Button(
-                onClick = {},
+                onClick = {
+                    vm.setUser(user)
+                    vm.showStreetPass()
+                          },
                 shape = RoundedCornerShape(50),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color(0xFFFF9800) ,
