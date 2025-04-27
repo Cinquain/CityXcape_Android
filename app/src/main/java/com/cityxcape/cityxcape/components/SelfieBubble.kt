@@ -17,9 +17,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
@@ -74,5 +76,16 @@ fun SelfieBubble(
                 .clip(CircleShape)
         )
     }
+}
+
+
+@Preview(showBackground = true)
+@Composable
+fun SelfieBubblePreview() {
+    SelfieBubble(
+        imageUrl = "https://firebasestorage.googleapis.com/v0/b/cityxcape-8888.appspot.com/o/Users%2FybA5qTaUH3OIMj1qPFACBRzbPnb2%2FCiara%20copy.png?alt=media&token=1a10681a-139a-4be7-9ab5-a71ef907bf10",
+        size = 300.dp,
+        onClick = {}
+    )
 }
 

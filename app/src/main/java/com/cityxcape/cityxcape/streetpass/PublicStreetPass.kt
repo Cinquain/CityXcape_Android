@@ -17,12 +17,18 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChatBubble
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.paint
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.graphics.Color
@@ -30,14 +36,17 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import com.cityxcape.cityxcape.components.SelfieBubble
+import com.cityxcape.cityxcape.components.SocialWorld
+import com.cityxcape.cityxcape.components.SocialWorldHeader
 import com.cityxcape.cityxcape.components.UserBubble
 import com.cityxcape.cityxcape.models.User
 
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PublicStreetPass(user: User) {
-     Box(
+    var showSocialWorld by remember { mutableStateOf(false) }
+
+    Box(
          modifier = Modifier.fillMaxSize(),
 
      ) {
@@ -71,7 +80,7 @@ fun PublicStreetPass(user: User) {
                  modifier = Modifier
                      .height(44.dp)
                      .width(200.dp)
-                     .clickable( onClick = {}),
+                     .clickable( onClick = { showSocialWorld = !showSocialWorld }),
                  shape = RoundedCornerShape(percent = 50)
              ) {
 
@@ -129,6 +138,14 @@ fun PublicStreetPass(user: User) {
                 }
              }
 
+             if (showSocialWorld) {
+                 ModalBottomSheet(
+                     onDismissRequest = {showSocialWorld = false},
+                     dragHandle = null
+                     ) {
+                     SocialWorld(user)
+                 }
+             }
 
              Spacer(modifier = Modifier.fillMaxSize())
          }

@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,14 +15,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Divider
-import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.Text
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
@@ -34,21 +31,17 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.cityxcape.cityxcape.components.UserBubble
 import com.cityxcape.cityxcape.models.User
 import com.cityxcape.cityxcape.streetpass.PublicStreetPass
-import java.nio.file.WatchEvent
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DigitalLounge(navController: NavHostController, vm: CheckinViewModel) {
-
     val sheetState = rememberModalBottomSheetState( skipPartiallyExpanded = true)
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -72,6 +65,7 @@ fun DigitalLounge(navController: NavHostController, vm: CheckinViewModel) {
         Spacer(modifier = Modifier.fillMaxSize())
 
         if (vm.showSP) {
+
             ModalBottomSheet(
                 onDismissRequest = {vm.hideStreetPass()},
                 modifier = Modifier.fillMaxSize(),
@@ -84,6 +78,8 @@ fun DigitalLounge(navController: NavHostController, vm: CheckinViewModel) {
         LaunchedEffect(Unit) {
             sheetState.expand()
         }
+
+
     }
 }
 

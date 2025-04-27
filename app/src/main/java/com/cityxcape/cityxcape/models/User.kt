@@ -5,12 +5,21 @@ data class User(
     val username: String,
     val imageUrl: String,
     val gender: Boolean,
+    val worlds: List<World>,
     val city: String,
     val streetCred: Int,
     val fcmToken: String
 ) {
     companion object {
         fun CreateFromMap(data: Map<String, Any?>) : User {
+
+            var fetchedWorlds = mutableListOf<World>()
+            val newData = data["worlds"] as? Map<String, Map<String, Any?>> ?:
+                                        emptyMap<String, Map<String, Any?>>()
+            newData.forEach { value ->
+                val world = World.CreateFromMap(value as Map<String, Any?>)
+                fetchedWorlds.add(world)
+            }
             return User(
                 id = data["id"] as? String ?: "",
                 username = data["username"] as? String ?:  "",
@@ -18,7 +27,8 @@ data class User(
                 gender = data["gender"] as? Boolean ?: false,
                 city = data["city"] as? String ?: "",
                 streetCred = data["streetcred"] as? Int ?: 0,
-                fcmToken = data["fcmToken"] as? String ?: ""
+                fcmToken = data["fcmToken"] as? String ?: "",
+                worlds = fetchedWorlds
             )
         }
 
@@ -30,7 +40,8 @@ data class User(
                 gender = false,
                 city = "Indianapolis",
                 streetCred = 10,
-                fcmToken = "dhsjishihsuhfuhfufhf"
+                fcmToken = "dhsjishihsuhfuhfufhf",
+                worlds = World.sampleList()
             )
         }
 
@@ -42,7 +53,8 @@ data class User(
                 gender = false,
                 city = "Indianapolis",
                 streetCred = 10,
-                fcmToken = "dhsjishihsuhfuhfufhf"
+                fcmToken = "dhsjishihsuhfuhfufhf",
+                worlds = World.sampleList()
             )
 
             var user2 = User(
@@ -52,7 +64,8 @@ data class User(
                 gender = true,
                 city = "Los Angeles",
                 streetCred = 50,
-                fcmToken = "dhsjishihsiudgiufgigfsuhfuhfufhf"
+                fcmToken = "dhsjishihsiudgiufgigfsuhfuhfufhf",
+                worlds = World.sampleList()
             )
 
             var user3 = User(
@@ -62,7 +75,8 @@ data class User(
                 gender = true,
                 city = "Minneapolis",
                 streetCred = 100,
-                fcmToken = "dhsdsyggdhgsdhgfjishihsuhfuhfufhf"
+                fcmToken = "dhsdsyggdhgsdhgfjishihsuhfuhfufhf",
+                worlds = World.sampleList()
             )
             return listOf(user1, user2, user3)
         }
