@@ -25,6 +25,8 @@ sealed class TabScreen(
         route = "streetpass",
         title = "StreetPass"
     )
+
+
 }
 
 sealed class CheckInScreen(
@@ -40,5 +42,8 @@ sealed class CheckInScreen(
 
     object Hunt: CheckInScreen(
         route = "scavengerHunt"
+    )
+    object SignUp: CheckInScreen(
+        route = "signup",
     )
 }

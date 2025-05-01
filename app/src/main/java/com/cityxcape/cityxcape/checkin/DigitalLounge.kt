@@ -69,7 +69,8 @@ fun DigitalLounge(navController: NavHostController, vm: CheckinViewModel) {
             ModalBottomSheet(
                 onDismissRequest = {vm.hideStreetPass()},
                 modifier = Modifier.fillMaxSize(),
-                sheetState = sheetState
+                sheetState = sheetState,
+                dragHandle = null
             ) {
                 PublicStreetPass(user = vm.currentUser!!)
             }

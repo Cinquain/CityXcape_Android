@@ -7,6 +7,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.cityxcape.cityxcape.authentication.SignUp
 import com.cityxcape.cityxcape.utilities.CheckInScreen
 
 
@@ -28,6 +29,10 @@ fun CheckinNavGraph() {
 
         composable(route = CheckInScreen.Lounge.route) {
             DigitalLounge(navController, vm)
+        }
+
+        composable(route = CheckInScreen.SignUp.route){
+            SignUp()
         }
     }
 }

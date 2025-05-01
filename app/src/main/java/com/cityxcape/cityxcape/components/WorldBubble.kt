@@ -39,7 +39,7 @@ fun WorldBubble(world: World) {
         )
 
         Text(
-            text = world.name,
+            text = world.memberName,
             fontWeight = FontWeight.Light,
             color = Color.White,
             fontSize = 16.sp

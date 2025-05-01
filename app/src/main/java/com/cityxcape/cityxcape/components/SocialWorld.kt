@@ -51,9 +51,9 @@ fun SocialWorld(user: User) {
 
             SocialWorldHeader(user)
 
-            Divider(modifier = Modifier.height(0.2.dp), color = Color.White)
+            Divider(modifier = Modifier.height(0.15.dp), color = Color.White)
 
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             user.worlds.forEach { world ->
                 WorldBubble(world)
@@ -71,7 +71,7 @@ fun SocialWorldHeader(user: User) {
         modifier = Modifier.padding(bottom = 5.dp)
     ) {
         Text(
-            text = "${user.username}'s World",
+            text = "My World",
             color = Color.White,
             fontSize = 20.sp,
             fontWeight = FontWeight.Thin

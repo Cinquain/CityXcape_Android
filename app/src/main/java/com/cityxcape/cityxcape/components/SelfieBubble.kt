@@ -37,7 +37,7 @@ fun SelfieBubble(
     val infineTransition = rememberInfiniteTransition(label = "Pulse")
     val pulseScale by infineTransition.animateFloat(
         initialValue = 1f,
-        targetValue = 1.2f,
+        targetValue = 1.1f,
         animationSpec = infiniteRepeatable(
             animation = tween(durationMillis = 1500, easing = FastOutSlowInEasing),
             repeatMode = RepeatMode.Reverse

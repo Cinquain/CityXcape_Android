@@ -46,6 +46,8 @@ android {
 }
 
 dependencies {
+    val composeBom = platform("androidx.compose:compose-bom:2025.02.00")
+    val lifecycle_version = "2.8.7"
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -70,7 +72,6 @@ dependencies {
 
     implementation("androidx.compose.material:material:1.7.8")
 
-    val composeBom = platform("androidx.compose:compose-bom:2025.02.00")
     implementation(composeBom)
     androidTestImplementation(composeBom)
 
@@ -130,6 +131,8 @@ dependencies {
     implementation("androidx.camera:camera-view:1.3.0")
 
 
-
+    //Lifecycle dependencies
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle_version")
 
 }

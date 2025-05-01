@@ -78,7 +78,7 @@ fun PublicStreetPass(user: User) {
              Surface(
                  color = Color.Black,
                  modifier = Modifier
-                     .height(44.dp)
+                     .height(50.dp)
                      .width(200.dp)
                      .clickable( onClick = { showSocialWorld = !showSocialWorld }),
                  shape = RoundedCornerShape(percent = 50)
@@ -90,9 +90,9 @@ fun PublicStreetPass(user: User) {
                      horizontalArrangement = Arrangement.Center
                  ) {
                     Text(
-                        text = "Social World",
+                        text = "${user.username}'s World",
                         color = Color(0xFFF59b4d),
-                        fontSize = 15.sp,
+                        fontSize = 18.sp,
                         fontWeight = FontWeight.Light
                     )
                     Spacer(modifier = Modifier.width(8.dp))

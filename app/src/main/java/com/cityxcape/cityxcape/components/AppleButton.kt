@@ -15,6 +15,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Dialpad
+import androidx.compose.material.icons.filled.Mail
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -50,7 +51,7 @@ fun AppleButton(
             ) {
 
                 Icon(
-                    imageVector = Icons.Filled.Dialpad,
+                    imageVector = Icons.Filled.Mail,
                     contentDescription = "Google Button",
                     tint = Color.White,
                     modifier = Modifier
@@ -61,7 +62,7 @@ fun AppleButton(
                 Spacer(modifier = Modifier.width(5.dp))
 
                 Text(
-                    text = "Sign Up with Number",
+                    text = "Sign Up with Email",
                     color = Color.White,
                     fontWeight = FontWeight.Light
                 )

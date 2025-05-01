@@ -29,14 +29,21 @@ import androidx.credentials.CredentialManager
 import com.cityxcape.cityxcape.components.AppleButton
 import com.cityxcape.cityxcape.components.GoogleButton
 import com.cityxcape.cityxcape.components.StreetPassBackground
+import com.cityxcape.cityxcape.firebase.AuthService
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 
 @Composable
 fun SignUp() {
     val isVisible = remember { mutableStateOf(false) }
+    var context = LocalContext.current
+    var authManager = AuthService(context)
+    val scope = rememberCoroutineScope()
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -71,7 +78,10 @@ fun SignUp() {
             GoogleButton(
                 isLoading = isVisible,
                 onClick = {
-                    isVisible.value = true
+                    scope.launch {
+                        authManager.getCredentialRequest()
+                        isVisible.value = true
+                    }
 
                 }
             )
@@ -87,13 +97,7 @@ fun SignUp() {
 }
 
 
-fun generateNonce(length: Int = 32): String {
-    val charset = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-._"
-    val random = SecureRandom()
-    return (1..length)
-        .map { charset[random.nextInt(charset.length)] }
-        .joinToString("")
-}
+
 
 
 

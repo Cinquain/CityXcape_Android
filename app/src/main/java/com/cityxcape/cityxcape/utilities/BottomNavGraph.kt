@@ -4,6 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.cityxcape.cityxcape.authentication.SignUp
+import com.cityxcape.cityxcape.checkin.Checkin
 import com.cityxcape.cityxcape.connections.Connections
 import com.cityxcape.cityxcape.checkin.CheckinNavGraph
 import com.cityxcape.cityxcape.messages.Messages
@@ -32,6 +34,7 @@ fun BottomNavGraph(navController: NavHostController) {
         composable(route = TabScreen.StreetPass.route) {
             StreetPass()
         }
+
 
     }
 }

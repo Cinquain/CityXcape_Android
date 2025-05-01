@@ -32,13 +32,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.cityxcape.cityxcape.components.AlertBox
 import com.cityxcape.cityxcape.utilities.CheckInScreen
 import com.cityxcape.cityxcape.utilities.QRCodeScanner
+import com.cityxcape.cityxcape.utilities.TabScreen
 
 @Composable
 fun Checkin(navController: NavHostController, vm: CheckinViewModel) {
 
     var showScan by remember { mutableStateOf(false) }
+    var showAlert by remember { mutableStateOf(false) }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -71,7 +74,7 @@ fun Checkin(navController: NavHostController, vm: CheckinViewModel) {
            Spacer(modifier = Modifier.height(10.dp))
            Button(
                onClick = {
-                    showScan = true
+                   showScan = !showScan
                },
                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF59b4d)),
                modifier = Modifier
@@ -88,6 +91,15 @@ fun Checkin(navController: NavHostController, vm: CheckinViewModel) {
                Text("Check-In", color = Color.Black, fontWeight = FontWeight.Light)
            }
        }
+
+        AlertBox(
+            title = "StreetPass Required",
+            message = "You need a profile to check-in",
+            onCloseRequest = {showAlert = !showAlert},
+            onConfirm = {navController.navigate(CheckInScreen.SignUp.route)},
+            onDismiss = {showAlert = !showAlert},
+            showDialog = showAlert
+        )
 
 
 
