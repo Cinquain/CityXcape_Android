@@ -1,13 +1,14 @@
 package com.cityxcape.cityxcape.authentication
 
-import android.credentials.GetCredentialRequest
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
@@ -19,21 +20,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import java.security.SecureRandom
 import androidx.compose.ui.unit.sp
 import androidx.compose.runtime.*
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.credentials.CredentialManager
 import com.cityxcape.cityxcape.components.AppleButton
 import com.cityxcape.cityxcape.components.GoogleButton
 import com.cityxcape.cityxcape.components.StreetPassBackground
 import com.cityxcape.cityxcape.firebase.AuthService
-import com.google.android.libraries.identity.googleid.GetGoogleIdOption
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.GoogleAuthProvider
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 
@@ -41,8 +36,8 @@ import kotlinx.coroutines.launch
 fun SignUp() {
     val isVisible = remember { mutableStateOf(false) }
     var context = LocalContext.current
-    var authManager = AuthService(context)
     val scope = rememberCoroutineScope()
+
 
     Box(
         modifier = Modifier
@@ -53,8 +48,19 @@ fun SignUp() {
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Top
         ) {
+
+            Text(
+                text = "STREETPASS",
+                color = Color.White,
+                fontWeight = FontWeight.Thin,
+                letterSpacing = 2.sp,
+                fontSize = 25.sp,
+                modifier = Modifier.padding(top = 10.dp, start = 5.dp).fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(200.dp))
 
             Icon(
                 painter = painterResource(id = com.cityxcape.cityxcape.R.drawable.dot),
@@ -79,7 +85,7 @@ fun SignUp() {
                 isLoading = isVisible,
                 onClick = {
                     scope.launch {
-                        authManager.getCredentialRequest()
+                        AuthService.getCredentialRequest(context)
                         isVisible.value = true
                     }
 

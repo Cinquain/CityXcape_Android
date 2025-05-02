@@ -13,20 +13,21 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import android.content.ContentValues.TAG
+import android.content.Intent
 import androidx.credentials.ClearCredentialStateRequest
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential.Companion.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
 import kotlinx.coroutines.CancellationException
 import java.security.SecureRandom
 
-class AuthService(
-    val context: Context,
-) {
+object AuthService {
+
     val auth: FirebaseAuth by lazy {
         FirebaseAuth.getInstance()
     }
 
-    private val credentialManager = CredentialManager.create(context)
 
     val uid: String?
         get() = auth.currentUser?.uid
@@ -39,16 +40,17 @@ class AuthService(
         }
     }
 
-    suspend fun signOut() {
+    suspend fun signOut(context: Context) {
+        val credentialManager = CredentialManager.create(context)
         credentialManager.clearCredentialState(
             ClearCredentialStateRequest()
         )
         auth.signOut()
     }
 
-    suspend fun startSigninWithGoogle() : Boolean {
+    suspend fun startSigninWithGoogle(context: Context) : Boolean {
         try {
-            var result = getCredentialRequest()
+            var result = getCredentialRequest(context)
             return handleSignIn(result.credential)
         } catch (e: Exception) {
             e.printStackTrace()
@@ -57,7 +59,9 @@ class AuthService(
         }
     }
 
-    suspend fun getCredentialRequest() : GetCredentialResponse {
+    suspend fun getCredentialRequest(context: Context) : GetCredentialResponse {
+        val credentialManager = CredentialManager.create(context)
+
         val options = GetGoogleIdOption.Builder()
             .setServerClientId(com.cityxcape.cityxcape.R.string.web_client_id.toString())
             .setFilterByAuthorizedAccounts(true)
@@ -71,6 +75,16 @@ class AuthService(
             request = request,
             context = context
         )
+    }
+
+    fun getGoogleSignInIntent(context: Context) : Intent {
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(com.cityxcape.cityxcape.R.string.web_client_id.toString())
+            .requestEmail()
+            .build()
+
+        val client = GoogleSignIn.getClient(context, gso)
+        return client.signInIntent
     }
 
     fun handleSignIn(credential: Credential) : Boolean {
@@ -102,14 +116,6 @@ class AuthService(
         }
     }
 
-    fun generateNonce(length: Int = 32): String {
-        val charset = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-._"
-        val random = SecureRandom()
-        return (1..length)
-            .map { charset[random.nextInt(charset.length)] }
-            .joinToString("")
-    }
-
 
     fun signInWithGoogle(token: String, onResult: (Boolean, FirebaseUser?) -> Unit ) {
         val credential = GoogleAuthProvider.getCredential(token, null)
@@ -123,6 +129,14 @@ class AuthService(
             }
     }
 
+
+    fun generateNonce(length: Int = 32): String {
+        val charset = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-._"
+        val random = SecureRandom()
+        return (1..length)
+            .map { charset[random.nextInt(charset.length)] }
+            .joinToString("")
+    }
 
 
 }

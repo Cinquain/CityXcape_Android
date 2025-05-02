@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.Button
@@ -33,6 +34,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.cityxcape.cityxcape.components.AlertBox
+import com.cityxcape.cityxcape.firebase.AuthService
 import com.cityxcape.cityxcape.utilities.CheckInScreen
 import com.cityxcape.cityxcape.utilities.QRCodeScanner
 import com.cityxcape.cityxcape.utilities.TabScreen
@@ -72,9 +74,15 @@ fun Checkin(navController: NavHostController, vm: CheckinViewModel) {
                fontSize = 20.sp
            )
            Spacer(modifier = Modifier.height(10.dp))
+
+
            Button(
                onClick = {
-                   showScan = !showScan
+                  if (AuthService.uid == null) {
+                      showAlert = !showAlert
+                  } else {
+                      showScan = !showScan
+                  }
                },
                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF59b4d)),
                modifier = Modifier
@@ -93,11 +101,13 @@ fun Checkin(navController: NavHostController, vm: CheckinViewModel) {
        }
 
         AlertBox(
-            title = "StreetPass Required",
-            message = "You need a profile to check-in",
-            onCloseRequest = {showAlert = !showAlert},
+            title = "Profile Required",
+            message = "You need an account to check-in",
+            confirmText = "Get One",
+            dismissText = "Nah",
+            onCloseRequest = {showAlert = false},
             onConfirm = {navController.navigate(CheckInScreen.SignUp.route)},
-            onDismiss = {showAlert = !showAlert},
+            onDismiss = {showAlert = false},
             showDialog = showAlert
         )
 

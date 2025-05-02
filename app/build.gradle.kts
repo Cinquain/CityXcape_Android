@@ -19,7 +19,7 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.3" // 👈 MUST be here! Use latest compatible version
+        kotlinCompilerExtensionVersion = "1.5.15" // 👈 MUST be here! Use latest compatible version
     }
     buildTypes {
         release {
@@ -77,6 +77,7 @@ dependencies {
 
     //Implements Material 3
     implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.material:material:1.8.0")
     implementation("androidx.compose.ui:ui")
 
     // Android Studio Preview support
@@ -118,7 +119,11 @@ dependencies {
     implementation("androidx.credentials:credentials:1.3.0")
     implementation("androidx.credentials:credentials-play-services-auth:1.3.0")
     implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
+    implementation("com.google.android.gms:play-services-auth:20.7.0")
 
+    implementation("com.google.accompanist:accompanist-pager:0.34.0")
+    implementation("com.google.accompanist:accompanist-pager-indicators:0.34.0")
+    implementation(platform("androidx.compose:compose-bom:2025.02.00"))
 
 
     //Goole BarCode Scanning ML Kit
