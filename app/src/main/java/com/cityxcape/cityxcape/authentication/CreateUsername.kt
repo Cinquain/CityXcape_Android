@@ -1,6 +1,5 @@
 package com.cityxcape.cityxcape.authentication
 
-import android.accessibilityservice.AccessibilityService
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -120,8 +119,12 @@ fun CreateUsername(vm: AuthViewModel) {
             Spacer(Modifier.height(30.dp))
 
             FilledTonalButton(
-                onClick = {},
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF00C1EA)),
+                onClick = {
+                    vm.setUsernameGender()
+                },
+                colors = ButtonDefaults.buttonColors(containerColor =
+                    if (vm.username.count() > 3){ Color(0xFF00C1EA) } else {
+                        Color.Gray}),
                 modifier = Modifier.width(120.dp).height(40.dp)
             ) {
                 Row(

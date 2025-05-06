@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,12 +34,12 @@ import com.cityxcape.cityxcape.firebase.AuthService
 import kotlinx.coroutines.launch
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignUp() {
+fun SignUp(vm: AuthViewModel) {
     val isVisible = remember { mutableStateOf(false) }
     var context = LocalContext.current
     val scope = rememberCoroutineScope()
-
 
     Box(
         modifier = Modifier
@@ -96,8 +98,18 @@ fun SignUp() {
 
             AppleButton(
                 isLoading = isVisible,
-                onClick = {}
+                onClick = { vm.signUpWithEmail = true }
             )
+
+            if (vm.signUpWithEmail) {
+                ModalBottomSheet(
+                    onDismissRequest = { vm.signUpWithEmail = false },
+                    dragHandle = null
+                ) {
+                    SignUpWithEmail(vm)
+                }
+            }
+
         }
     }
 }
@@ -112,5 +124,5 @@ fun SignUp() {
 @Preview(showBackground = true)
 @Composable
 fun SignUpPreview() {
-    SignUp()
+    SignUp(AuthViewModel())
 }

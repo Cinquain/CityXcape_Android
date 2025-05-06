@@ -30,7 +30,7 @@ fun Onboarding(navController: NavHostController) {
     val vm: AuthViewModel = AuthViewModel()
 
     val pages = listOf<@Composable () -> Unit>(
-        {SignUp()},
+        {SignUp(vm)},
         {CreateUsername(vm)},
         {NotificationsView(vm)},
         {FindCityView(vm)},

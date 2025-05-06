@@ -202,12 +202,7 @@ fun WorldView() {
 
                 Spacer(modifier = Modifier.height(2.dp))
 
-                Text(
-                    text = world.name,
-                    color = Color.White,
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Light
-                )
+
             }
 
             Spacer(modifier = Modifier.width(10.dp))

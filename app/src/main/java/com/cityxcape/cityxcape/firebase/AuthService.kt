@@ -14,6 +14,8 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import android.content.ContentValues.TAG
 import android.content.Intent
+import android.nfc.Tag
+import android.widget.Toast
 import androidx.credentials.ClearCredentialStateRequest
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -136,6 +138,21 @@ object AuthService {
         return (1..length)
             .map { charset[random.nextInt(charset.length)] }
             .joinToString("")
+    }
+
+     fun signInWithEmail(email: String, password: String, completion: (String?) -> Unit) {
+
+        auth.signInWithEmailAndPassword(email,password)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Log.d(TAG,"createdUserWithEmail")
+                    val uid = auth.currentUser?.uid
+                    completion(uid)
+                } else {
+                    Log.w(TAG, "createUserWithEmail:failure", task.exception)
+                    completion(null)
+                }
+            }
     }
 
 

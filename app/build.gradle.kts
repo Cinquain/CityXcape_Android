@@ -5,6 +5,8 @@ plugins {
     id("com.google.gms.google-services")
 }
 
+val MAPS_API_KEY: String = project.findProperty("MAPS_API_KEY") as? String ?: ""
+
 android {
     namespace = "com.cityxcape.cityxcape"
     compileSdk = 35
@@ -17,6 +19,8 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        manifestPlaceholders["MAPS_API_KEY"] = MAPS_API_KEY
+        resValue("string", "google_maps_key", MAPS_API_KEY)
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.15" // 👈 MUST be here! Use latest compatible version
@@ -113,6 +117,7 @@ dependencies {
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.google.firebase:firebase-storage")
+    implementation("com.google.firebase:firebase-messaging")
 
     //Google Sign in dependencies
     // Also add the dependencies for the Credential Manager libraries and specify their versions
@@ -124,7 +129,6 @@ dependencies {
     implementation("com.google.accompanist:accompanist-pager:0.34.0")
     implementation("com.google.accompanist:accompanist-pager-indicators:0.34.0")
     implementation(platform("androidx.compose:compose-bom:2025.02.00"))
-
 
     //Goole BarCode Scanning ML Kit
     implementation("com.google.mlkit:barcode-scanning:17.3.0")
@@ -139,5 +143,11 @@ dependencies {
     //Lifecycle dependencies
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle_version")
+
+
+    //Google Map Dependencies
+    implementation("com.google.android.gms:play-services-location:21.3.0")
+    implementation("com.google.maps.android:maps-compose:6.6.0")
+    implementation("com.google.android.gms:play-services-maps:19.2.0")
 
 }
