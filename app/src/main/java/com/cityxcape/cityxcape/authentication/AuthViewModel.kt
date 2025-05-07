@@ -26,6 +26,8 @@ class AuthViewModel: ViewModel() {
 
     var fcmToken by mutableStateOf("")
 
+    var imageUrl by mutableStateOf("")
+
     var signUpWithEmail by  mutableStateOf(false)
 
     var selectedWorlds = mutableStateListOf<World>()

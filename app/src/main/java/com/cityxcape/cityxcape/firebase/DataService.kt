@@ -61,6 +61,16 @@ object DataService {
             .update(data)
     }
 
+    fun saveProfileImage(imageUrl: String) {
+        val uid: String = AuthService.uid ?: return
+
+        val data: Map<String, Any> = mapOf(
+            "imageUrl" to imageUrl
+        )
+        db.collection("users").document(uid)
+            .update(data)
+    }
+
     fun updateFcmToken(token: String) {
         val uid: String = AuthService?.uid ?: return
 
