@@ -1,5 +1,6 @@
 package com.cityxcape.cityxcape.authentication
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
@@ -10,6 +11,7 @@ import androidx.lifecycle.viewModelScope
 import com.cityxcape.cityxcape.firebase.AuthService
 import com.cityxcape.cityxcape.firebase.DataService
 import com.cityxcape.cityxcape.models.World
+import com.cityxcape.cityxcape.utilities.PreferencesManager
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.launch
@@ -49,12 +51,16 @@ class AuthViewModel: ViewModel() {
     }
 
 
-    fun setUsernameGender() {
+    fun setUsernameGender(context: Context) {
         val data: Map<String, Any> = mapOf(
             "username" to username,
             "gender" to isMale
         )
-        DataService.saveNameGender(data)
+
+        viewModelScope.launch {
+            DataService.saveNameGender(data)
+            PreferencesManager.saveUsername(context, username)
+        }
     }
 
     fun registerFCMToken() {
@@ -70,17 +76,10 @@ class AuthViewModel: ViewModel() {
         }
     }
 
-    fun createUserByEmailAndPassword(context: Context) {
-        AuthService.signInWithEmail(email, password) { uid ->
-
-            if (uid != null) {
-                DataService.createUserFromEmail(uid, email)
-                Toast.makeText(context, "Account Created", Toast.LENGTH_SHORT)
-                signUpWithEmail = false
-            } else {
-                Toast.makeText(context, "Error creating user", Toast.LENGTH_SHORT)
-            }
-        }
+    suspend fun createUserByEmailAndPassword(context: Context) {
+        val uid = AuthService.signInWithEmail(email, password)
+        val userId: String = uid ?: throw Exception("UID is null")
+        DataService.createUserFromEmail(userId, email)
     }
 
 

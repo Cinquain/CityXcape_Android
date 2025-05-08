@@ -34,7 +34,7 @@ object DataService {
         }
     }
 
-    fun createUserFromEmail(uid: String, email: String) {
+    suspend fun createUserFromEmail(uid: String, email: String) {
 
         val data: Map<String, Any> = mapOf(
             "id" to uid,
@@ -43,22 +43,12 @@ object DataService {
             "timestamp" to Timestamp
         )
 
-        db.collection("users").document(uid).set(data)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    Log.d("Firestore", "user successfully created!")
-                } else {
-                    Log.e("Firestore", "Error creating user")
-                }
-            }
-
+        db.collection("users").document(uid).set(data).await()
     }
 
-    fun saveNameGender(data: Map<String, Any>) {
+    suspend fun saveNameGender(data: Map<String, Any>) {
         val uid: String = AuthService?.uid ?: return
-
-        db.collection("users").document(uid)
-            .update(data)
+        db.collection("users").document(uid).update(data).await()
     }
 
     fun saveProfileImage(imageUrl: String) {
@@ -79,6 +69,15 @@ object DataService {
         )
         db.collection("users").document(uid)
             .update(data)
+    }
+
+    fun deleteUser() {
+        val uid: String = AuthService?.uid ?: return
+
+        db.collection("users").document(uid).delete()
+        AuthService.auth.currentUser?.delete()
+
+
     }
 
 

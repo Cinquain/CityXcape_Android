@@ -22,6 +22,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential.Companion.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.tasks.await
 import java.security.SecureRandom
 
 object AuthService {
@@ -140,19 +141,9 @@ object AuthService {
             .joinToString("")
     }
 
-     fun signInWithEmail(email: String, password: String, completion: (String?) -> Unit) {
-
-        auth.signInWithEmailAndPassword(email,password)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    Log.d(TAG,"createdUserWithEmail")
-                    val uid = auth.currentUser?.uid
-                    completion(uid)
-                } else {
-                    Log.w(TAG, "createUserWithEmail:failure", task.exception)
-                    completion(null)
-                }
-            }
+     suspend fun signInWithEmail(email: String, password: String) : String? {
+       val user = auth.signInWithEmailAndPassword(email,password).await().user
+       return user?.uid
     }
 
 

@@ -29,6 +29,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -44,6 +45,7 @@ import com.cityxcape.cityxcape.components.StreetPassBackground
 @Composable
 fun CreateUsername(vm: AuthViewModel) {
     val keyboardController = LocalSoftwareKeyboardController.current
+    val context = LocalContext.current
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -120,7 +122,7 @@ fun CreateUsername(vm: AuthViewModel) {
 
             FilledTonalButton(
                 onClick = {
-                    vm.setUsernameGender()
+                    vm.setUsernameGender(context)
                 },
                 colors = ButtonDefaults.buttonColors(containerColor =
                     if (vm.username.count() > 3){ Color(0xFF00C1EA) } else {

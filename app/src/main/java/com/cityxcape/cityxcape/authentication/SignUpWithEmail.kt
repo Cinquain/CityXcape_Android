@@ -1,7 +1,5 @@
 package com.cityxcape.cityxcape.authentication
 
-import android.widget.Space
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -19,6 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Mail
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,10 +28,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import com.cityxcape.cityxcape.components.StreetPassBackground
+import kotlinx.coroutines.launch
+import android.widget.Toast
 
 @Composable
 fun SignUpWithEmail(vm: AuthViewModel) {
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -89,7 +91,15 @@ fun SignUpWithEmail(vm: AuthViewModel) {
 
             FilledTonalButton(
                 onClick = {
-                    vm.createUserByEmailAndPassword(context)
+                    scope.launch {
+                        try {
+                            vm.createUserByEmailAndPassword(context)
+                            Toast.makeText(context, "Account Created", Toast.LENGTH_SHORT).show()
+                            vm.signUpWithEmail = false
+                        } catch (e: Exception) {
+                            Toast.makeText(context, "${e.message}", Toast.LENGTH_SHORT).show()
+                        }
+                    }
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xFF00C1EA)

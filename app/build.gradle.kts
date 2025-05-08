@@ -110,6 +110,8 @@ dependencies {
     // Optional - Integration with RxJava
     implementation("androidx.compose.runtime:runtime-rxjava2")
 
+    //Implementing data store for advanced share preferences savings
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
 
     //Firebase Implementation
     implementation(platform("com.google.firebase:firebase-bom:33.12.0"))
@@ -130,7 +132,7 @@ dependencies {
     implementation("com.google.accompanist:accompanist-pager-indicators:0.34.0")
     implementation(platform("androidx.compose:compose-bom:2025.02.00"))
 
-    //Goole BarCode Scanning ML Kit
+    //Google BarCode Scanning ML Kit
     implementation("com.google.mlkit:barcode-scanning:17.3.0")
 
     // CameraX

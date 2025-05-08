@@ -1,5 +1,7 @@
 package com.cityxcape.cityxcape.authentication
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -26,7 +28,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -49,16 +53,18 @@ fun StreetIDCard(vm: AuthViewModel) {
             verticalArrangement = Arrangement.Top
         ) {
 
+            Spacer(Modifier.height(100.dp))
+
             Text(
-                text = "STREETPASS",
+                text = "Welcome to CityXcape",
                 color = Color.White,
                 fontWeight = FontWeight.Thin,
                 letterSpacing = 2.sp,
-                fontSize = 25.sp,
+                fontSize = 22.sp,
+                textAlign = TextAlign.Center,
                 modifier = Modifier.padding(top = 10.dp, start = 5.dp).fillMaxWidth()
             )
 
-            Spacer(Modifier.height(100.dp))
 
             SelfieBubble(
                 imageUrl = vm.imageUrl,
@@ -72,7 +78,15 @@ fun StreetIDCard(vm: AuthViewModel) {
                 text = vm.username,
                 color = Color.White,
                 fontWeight = FontWeight.Thin,
-                fontSize = 18.sp
+                fontSize = 22.sp
+            )
+            Spacer(Modifier.height(5.dp))
+
+            Text(
+                text = "3 StreetCred",
+                color = Color.White,
+                fontWeight = FontWeight.Thin,
+                fontSize = 15.sp
             )
 
             Spacer(Modifier.height(50.dp))
@@ -107,7 +121,7 @@ fun StreetIDCard(vm: AuthViewModel) {
             Spacer(Modifier.height(50.dp))
 
             Surface(
-                color = Color.Blue,
+                color = Color(0xFF007AFF),
                 modifier = Modifier
                     .width(200.dp)
                     .height(44.dp)
@@ -120,7 +134,7 @@ fun StreetIDCard(vm: AuthViewModel) {
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = "Create StreetPass",
+                        text = "Create Account",
                         color = Color.White,
                         fontWeight = FontWeight.Light
                     )

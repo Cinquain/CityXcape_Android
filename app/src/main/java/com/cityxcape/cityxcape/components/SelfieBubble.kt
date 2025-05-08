@@ -55,13 +55,13 @@ fun SelfieBubble(
                     scaleX = pulseScale
                     scaleY = pulseScale
                 }
-                .background(Color.Blue.copy(alpha = 0.3f), shape = CircleShape)
+                .background(Color(0xFF007AFF).copy(alpha = 0.3f), shape = CircleShape)
         )
 
         Box(
             modifier = Modifier
                 .size(size / 1.2f)
-                .background(Color.Blue, shape = CircleShape)
+                .background(Color(0xFF007AFF), shape = CircleShape)
         )
 
         AsyncImage(

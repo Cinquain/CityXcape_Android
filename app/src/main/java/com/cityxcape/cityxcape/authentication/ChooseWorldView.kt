@@ -1,5 +1,6 @@
 package com.cityxcape.cityxcape.authentication
 
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -44,8 +45,8 @@ import com.cityxcape.cityxcape.components.StreetPassBackground
 
 @Composable
 fun ChooseWorldView(vm: AuthViewModel) {
+    val context = LocalContext.current
     Box(Modifier.fillMaxSize()) {
-        var checked by remember { mutableStateOf(false) }
 
 
         StreetPassBackground()
@@ -81,7 +82,10 @@ fun ChooseWorldView(vm: AuthViewModel) {
                     .height(400.dp)
             ) {
                items(vm.worlds) { world ->
-                    Row(
+
+                   var checked by remember { mutableStateOf(false) }
+
+                   Row(
                         modifier = Modifier.fillMaxWidth().padding(start = 5.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.Top
@@ -103,9 +107,13 @@ fun ChooseWorldView(vm: AuthViewModel) {
                                    .clickable(enabled = true, onClick = {
                                        if (vm.selectedWorlds.contains(world)) {
                                            vm.selectedWorlds.remove(world)
+                                           Toast.makeText(context, "Removed ${world.name} from your world",
+                                               Toast.LENGTH_SHORT).show()
                                            checked = false
                                        } else {
                                            vm.selectedWorlds.add(world)
+                                           Toast.makeText(context, "Added ${world.name} to your world",
+                                               Toast.LENGTH_SHORT).show()
                                            checked = true
                                        }
                                    })
@@ -123,7 +131,19 @@ fun ChooseWorldView(vm: AuthViewModel) {
 
                         Checkbox(
                             checked = checked,
-                            onCheckedChange = { checked = it },
+                            onCheckedChange = {
+                                if (it) {
+                                    vm.selectedWorlds.add(world)
+                                    Toast.makeText(context, "Added ${world.name} to your world",
+                                        Toast.LENGTH_SHORT).show()
+                                    checked = true
+                                } else {
+                                    vm.selectedWorlds.remove(world)
+                                    Toast.makeText(context, "Removed ${world.name} from your world",
+                                        Toast.LENGTH_SHORT).show()
+                                    checked = false
+                                }
+                            },
                             colors = CheckboxDefaults.colors(
                                 checkedColor = Color.White,
                                 uncheckedColor = Color.White,
