@@ -49,7 +49,7 @@ fun FindCityView(vm: AuthViewModel) {
 
     val context = LocalContext.current
     val fusedLocation = remember { LocationServices.getFusedLocationProviderClient(context) }
-    val defaultLocation = rememberUpdatedMarkerState(position = LatLng(44.97263913267112, -93.21218971592698))
+    val defaultLocation = rememberUpdatedMarkerState(position = LatLng(40.748692438324866, -73.98566440255941))
 
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(LatLng(44.97263913267112, -93.21218971592698),15f)
@@ -122,10 +122,12 @@ fun FindCityView(vm: AuthViewModel) {
                     properties = MapProperties(isMyLocationEnabled = false)
                 ) {
 
-                    Marker(
-                        state = defaultLocation,
-                        title = "You are here"
-                    )
+                Marker(
+                    state = defaultLocation,
+                    title = "You are here"
+                )
+
+
 
                 }
             }

@@ -1,11 +1,14 @@
 package com.cityxcape.cityxcape.firebase
 
+import android.content.Context
 import android.nfc.Tag
 import android.util.Log
 import com.cityxcape.cityxcape.models.World
+import com.cityxcape.cityxcape.utilities.PreferencesManager
 import com.google.android.gms.auth.api.Auth
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.AuthResult
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 
@@ -14,6 +17,7 @@ object DataService {
     private  val db: FirebaseFirestore by lazy {
         FirebaseFirestore.getInstance()
     }
+
     //MARK: USER FUNCTIONS
     suspend fun createUser(authResult: AuthResult) {
         val uid: String = authResult.user?.uid ?: return
@@ -53,33 +57,58 @@ object DataService {
 
     fun saveProfileImage(imageUrl: String) {
         val uid: String = AuthService.uid ?: return
-
         val data: Map<String, Any> = mapOf(
             "imageUrl" to imageUrl
         )
-        db.collection("users").document(uid)
-            .update(data)
+        db.collection("users").document(uid).update(data)
     }
 
-    fun updateFcmToken(token: String) {
+    suspend fun updateFcmToken(token: String) {
         val uid: String = AuthService?.uid ?: return
 
         val data: Map<String, Any> = mapOf(
-            "fcmToken" to token
+            "fcmToken" to token,
+            "streetcred" to FieldValue.increment(1)
         )
-        db.collection("users").document(uid)
-            .update(data)
+        db.collection("users").document(uid).update(data).await()
     }
 
-    fun deleteUser() {
+    suspend fun updateUserCity(city: String) {
         val uid: String = AuthService?.uid ?: return
-
-        db.collection("users").document(uid).delete()
-        AuthService.auth.currentUser?.delete()
-
-
+        val data: Map<String, Any> = mapOf(
+            "city" to city
+        )
+        db.collection("users").document(uid).update(data).await()
     }
 
+    suspend fun saveUserWorlds(worlds: List<World>) {
+        val uid: String = AuthService?.uid ?: return
+        var dataList = mutableListOf<Map<String, Any>>()
+        worlds.forEach { world ->
+           val innermap = mapOf<String, Any>(
+               "worldId" to world.id,
+               "name" to world.name,
+               "memberName" to world.memberName,
+               "imageUrl" to world.imageUrl
+           )
+            val outtermap = mapOf(
+                world.id to innermap
+            )
+            dataList.add(outtermap)
+        }
+        val data = mapOf<String, Any>(
+            "worlds" to dataList,
+            "streetcred" to FieldValue.increment(1)
+        )
+        db.collection("users").document(uid).update(data).await()
+    }
+
+    suspend fun deleteUser(context: Context) {
+        val uid: String = AuthService?.uid ?: return
+        db.collection("users").document(uid).delete().await()
+        AuthService.auth.currentUser?.delete()?.await()
+        PreferencesManager.clearSharedPreferences(context)
+    }
 
     //MARK: WORLD FUNCTIONS
 

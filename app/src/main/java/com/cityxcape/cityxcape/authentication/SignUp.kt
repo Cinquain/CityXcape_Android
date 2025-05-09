@@ -1,5 +1,6 @@
 package com.cityxcape.cityxcape.authentication
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -87,8 +88,19 @@ fun SignUp(vm: AuthViewModel) {
                 isLoading = isVisible,
                 onClick = {
                     scope.launch {
-                        AuthService.getCredentialRequest(context)
-                        isVisible.value = true
+                        try {
+                            val result = AuthService.getCredentialRequest(context)
+                            val success = AuthService.handleSignInWithGoogle(result.credential)
+                            if (success) {
+                                Toast.makeText(context, "Signed up successfully", Toast.LENGTH_SHORT).show()
+                            } else {
+                                Toast.makeText(context, "Authentication Failed", Toast.LENGTH_SHORT).show()
+                            }
+                        } catch (e: Exception) {
+                            Toast.makeText(context, "Failed to Authenticate", Toast.LENGTH_SHORT).show()
+                        } finally {
+                            isVisible.value = false
+                        }
                     }
 
                 }

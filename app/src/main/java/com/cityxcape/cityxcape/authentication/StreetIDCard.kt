@@ -65,6 +65,7 @@ fun StreetIDCard(vm: AuthViewModel) {
                 modifier = Modifier.padding(top = 10.dp, start = 5.dp).fillMaxWidth()
             )
 
+            Spacer(Modifier.height(10.dp))
 
             SelfieBubble(
                 imageUrl = vm.imageUrl,
@@ -120,12 +121,49 @@ fun StreetIDCard(vm: AuthViewModel) {
 
             Spacer(Modifier.height(50.dp))
 
+           Row(
+               modifier = Modifier.fillMaxWidth(),
+               horizontalArrangement = Arrangement.Center,
+               verticalAlignment = Alignment.CenterVertically
+           ) {
+               vm.selectedWorlds.forEach { world ->
+                   Column(
+                       horizontalAlignment = Alignment.CenterHorizontally,
+                       verticalArrangement = Arrangement.Center
+                   ) {
+                       AsyncImage(
+                           model = ImageRequest.Builder(LocalContext.current)
+                               .data(world.imageUrl)
+                               .crossfade(true)
+                               .build(),
+                           contentDescription = "World Image",
+                           contentScale = ContentScale.Fit,
+                           colorFilter = ColorFilter.tint(Color.Blue, blendMode = BlendMode.Color),
+                           modifier = Modifier
+                               .size(60.dp)
+                               .clip(CircleShape),
+                           clipToBounds = true,
+                       )
+
+                       Spacer(modifier = Modifier.height(2.dp))
+
+
+                   }
+
+                   Spacer(modifier = Modifier.width(10.dp))
+               }
+           }
+
+            Spacer(Modifier.height(25.dp))
+
             Surface(
                 color = Color(0xFF007AFF),
                 modifier = Modifier
                     .width(200.dp)
                     .height(44.dp)
-                    .clickable(onClick = {}),
+                    .clickable(onClick = {
+                        vm.saveUsersWorld()
+                    }),
                 shape = RoundedCornerShape(50)
             ) {
                 Row(

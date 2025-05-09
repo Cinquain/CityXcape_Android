@@ -3,7 +3,6 @@ package com.cityxcape.cityxcape.firebase
 import androidx.credentials.CredentialManager
 import android.content.Context
 import android.util.Log
-import androidx.credentials.Credential
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
 import androidx.credentials.GetCredentialResponse
@@ -13,6 +12,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import android.content.ContentValues.TAG
+import com.cityxcape.cityxcape.R
+import androidx.credentials.Credential
 import android.content.Intent
 import android.nfc.Tag
 import android.widget.Toast
@@ -51,22 +52,11 @@ object AuthService {
         auth.signOut()
     }
 
-    suspend fun startSigninWithGoogle(context: Context) : Boolean {
-        try {
-            var result = getCredentialRequest(context)
-            return handleSignIn(result.credential)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            if (e is CancellationException) throw e
-            return false
-        }
-    }
-
     suspend fun getCredentialRequest(context: Context) : GetCredentialResponse {
         val credentialManager = CredentialManager.create(context)
 
         val options = GetGoogleIdOption.Builder()
-            .setServerClientId(com.cityxcape.cityxcape.R.string.web_client_id.toString())
+            .setServerClientId(context.getString(R.string.web_client_id))
             .setFilterByAuthorizedAccounts(true)
             .build()
 
@@ -80,17 +70,7 @@ object AuthService {
         )
     }
 
-    fun getGoogleSignInIntent(context: Context) : Intent {
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(com.cityxcape.cityxcape.R.string.web_client_id.toString())
-            .requestEmail()
-            .build()
-
-        val client = GoogleSignIn.getClient(context, gso)
-        return client.signInIntent
-    }
-
-    fun handleSignIn(credential: Credential) : Boolean {
+    fun handleSignInWithGoogle(credential: Credential) : Boolean {
         // Check if credential is of type Google ID
         if (credential is CustomCredential && credential.type == TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
             // Create Google ID Token
@@ -101,7 +81,7 @@ object AuthService {
                 signInWithGoogle(tokenCredential.idToken) {  success, user ->
                     if (success) {
                         val uid = user?.uid
-                        //Check if the UID exist in db,
+                    //Check if the UID exist in db,
                     // if so, log in, if not create user account
 
                     } else {
@@ -119,13 +99,12 @@ object AuthService {
         }
     }
 
-
     fun signInWithGoogle(token: String, onResult: (Boolean, FirebaseUser?) -> Unit ) {
         val credential = GoogleAuthProvider.getCredential(token, null)
         auth.signInWithCredential(credential)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                   onResult(true, auth.currentUser)
+                    onResult(true, auth.currentUser)
                 } else {
                     onResult(false, null)
                 }

@@ -2,8 +2,9 @@ package com.cityxcape.cityxcape.authentication
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.location.Geocoder
 import android.util.Log
-import android.widget.Toast
+import java.util.Locale
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.compose.runtime.*
@@ -15,6 +16,7 @@ import com.cityxcape.cityxcape.utilities.PreferencesManager
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.launch
+import okio.IOException
 
 class AuthViewModel: ViewModel() {
 
@@ -29,6 +31,8 @@ class AuthViewModel: ViewModel() {
     var fcmToken by mutableStateOf("")
 
     var imageUrl by mutableStateOf("")
+
+    var city by mutableStateOf("")
 
     var signUpWithEmail by  mutableStateOf(false)
 
@@ -63,13 +67,17 @@ class AuthViewModel: ViewModel() {
         }
     }
 
+
+
     fun registerFCMToken() {
         FirebaseMessaging
             .getInstance()
             .token.addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     fcmToken = task.result
-                    DataService.updateFcmToken(fcmToken)
+                    viewModelScope.launch {
+                        DataService.updateFcmToken(fcmToken)
+                    }
                 } else {
                     Log.e("FCM","Fetching FCM token failed", task.exception)
                 }
@@ -80,6 +88,28 @@ class AuthViewModel: ViewModel() {
         val uid = AuthService.signInWithEmail(email, password)
         val userId: String = uid ?: throw Exception("UID is null")
         DataService.createUserFromEmail(userId, email)
+    }
+
+    fun saveUsersWorld() {
+        viewModelScope.launch {
+            DataService.saveUserWorlds(selectedWorlds)
+        }
+    }
+
+    fun getCityFromLocation(context: Context, latLng: LatLng)  {
+        try {
+            var geocoder = Geocoder(context, Locale.getDefault())
+            var addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
+            if (addresses != null && addresses.isNotEmpty()) {
+               city = addresses[0].locality ?: ""
+                viewModelScope.launch {
+                    DataService.updateUserCity(city)
+                }
+            }
+        } catch (e: IOException) {
+
+        }
+
     }
 
 
