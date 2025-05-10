@@ -3,6 +3,7 @@ package com.cityxcape.cityxcape.firebase
 import android.content.Context
 import android.nfc.Tag
 import android.util.Log
+import com.cityxcape.cityxcape.models.User
 import com.cityxcape.cityxcape.models.World
 import com.cityxcape.cityxcape.utilities.PreferencesManager
 import com.google.android.gms.auth.api.Auth
@@ -19,9 +20,22 @@ object DataService {
     }
 
     //MARK: USER FUNCTIONS
-    suspend fun createUser(authResult: AuthResult) {
-        val uid: String = authResult.user?.uid ?: return
-        val email: String = authResult.user?.email ?: return
+
+    suspend fun createUserOrLogin(userId: String?, email: String?, context: Context) : Boolean {
+        val uid = userId ?: throw Exception("Null user id")
+        val email = email ?: throw Exception("Email is null")
+
+         db.collection("users").document(uid).get().await().data.let { document ->
+             val data = document as Map<String, Any?>
+             val user = User.CreateFromMap(data)
+             PreferencesManager.setPreferencesFrom(user, context)
+             return false
+        }
+        createUser(uid, email)
+        return true
+    }
+
+    suspend fun createUser(uid: String, email: String) {
 
         val data: Map<String, Any> = mapOf(
             "id" to uid,
@@ -36,18 +50,6 @@ object DataService {
         } catch (e: Exception) {
             Log.e("Firestore", "Error creating user", e)
         }
-    }
-
-    suspend fun createUserFromEmail(uid: String, email: String) {
-
-        val data: Map<String, Any> = mapOf(
-            "id" to uid,
-            "email" to email,
-            "streetcred" to 1,
-            "timestamp" to Timestamp
-        )
-
-        db.collection("users").document(uid).set(data).await()
     }
 
     suspend fun saveNameGender(data: Map<String, Any>) {

@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.cityxcape.cityxcape.models.User
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -84,6 +85,13 @@ object PreferencesManager {
         context.datastore.edit { prefs ->
             prefs.clear()
         }
+    }
+
+    suspend fun setPreferencesFrom(user: User, context: Context) {
+        saveUsername(context, user.username)
+        saveUserId(context, user.id)
+        saveStreetCred(context, user.streetCred)
+        saveImageUrl(context, user.imageUrl)
     }
 
 }

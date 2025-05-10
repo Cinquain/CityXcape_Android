@@ -87,7 +87,7 @@ class AuthViewModel: ViewModel() {
     suspend fun createUserByEmailAndPassword(context: Context) {
         val uid = AuthService.signInWithEmail(email, password)
         val userId: String = uid ?: throw Exception("UID is null")
-        DataService.createUserFromEmail(userId, email)
+        DataService.createUser(userId, email)
     }
 
     fun saveUsersWorld() {

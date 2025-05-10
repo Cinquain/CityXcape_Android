@@ -14,15 +14,8 @@ import com.google.firebase.auth.GoogleAuthProvider
 import android.content.ContentValues.TAG
 import com.cityxcape.cityxcape.R
 import androidx.credentials.Credential
-import android.content.Intent
-import android.nfc.Tag
-import android.widget.Toast
 import androidx.credentials.ClearCredentialStateRequest
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential.Companion.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
-import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.tasks.await
 import java.security.SecureRandom
 
@@ -70,46 +63,18 @@ object AuthService {
         )
     }
 
-    fun handleSignInWithGoogle(credential: Credential) : Boolean {
+    suspend fun handleSignInWithGoogle(credential: Credential) : FirebaseUser? {
         // Check if credential is of type Google ID
         if (credential is CustomCredential && credential.type == TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
-            // Create Google ID Token
             val tokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
-
-            try {
-                // Sign in to Firebase with using the token
-                signInWithGoogle(tokenCredential.idToken) {  success, user ->
-                    if (success) {
-                        val uid = user?.uid
-                    //Check if the UID exist in db,
-                    // if so, log in, if not create user account
-
-                    } else {
-                        Log.e("error", "error signing in to firebase")
-                    }
-                }
-                return  true
-            } catch (e: GoogleIdTokenParsingException) {
-                println("Google parsing exception error: ${e.message}")
-                return  false
-            }
+            val credential = GoogleAuthProvider.getCredential(tokenCredential.id, null)
+            return auth.signInWithCredential(credential).await().user
         } else {
             Log.w(TAG, "Credential is not of type Google ID!")
-            return  false
+            return null
         }
     }
 
-    fun signInWithGoogle(token: String, onResult: (Boolean, FirebaseUser?) -> Unit ) {
-        val credential = GoogleAuthProvider.getCredential(token, null)
-        auth.signInWithCredential(credential)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    onResult(true, auth.currentUser)
-                } else {
-                    onResult(false, null)
-                }
-            }
-    }
 
 
     fun generateNonce(length: Int = 32): String {
@@ -122,6 +87,7 @@ object AuthService {
 
      suspend fun signInWithEmail(email: String, password: String) : String? {
        val user = auth.signInWithEmailAndPassword(email,password).await().user
+         //check if user exist, if so, login, if not, create account
        return user?.uid
     }
 

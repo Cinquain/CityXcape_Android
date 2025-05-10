@@ -1,5 +1,7 @@
 package com.cityxcape.cityxcape.authentication
 
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,15 +24,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 
 @Composable
 fun Onboarding(navController: NavHostController) {
 
-    val vm: AuthViewModel = AuthViewModel()
+    val owner = LocalViewModelStoreOwner.current
+    val vm: AuthViewModel = viewModel(owner!!)
 
     val pages = listOf<@Composable () -> Unit>(
-        {SignUp(vm)},
+        {SignUp(navController, vm)},
         {CreateUsername(vm)},
         {NotificationsView(vm)},
         {FindCityView(vm)},

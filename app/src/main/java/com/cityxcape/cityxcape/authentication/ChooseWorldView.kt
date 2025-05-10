@@ -133,12 +133,10 @@ fun ChooseWorldView(vm: AuthViewModel) {
                             checked = checked,
                             onCheckedChange = {
                                 if (it) {
-                                    vm.selectedWorlds.add(world)
                                     Toast.makeText(context, "Added ${world.name} to your world",
                                         Toast.LENGTH_SHORT).show()
                                     checked = true
                                 } else {
-                                    vm.selectedWorlds.remove(world)
                                     Toast.makeText(context, "Removed ${world.name} from your world",
                                         Toast.LENGTH_SHORT).show()
                                     checked = false
