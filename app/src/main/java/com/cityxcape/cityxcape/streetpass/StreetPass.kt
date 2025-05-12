@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.Book
+import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.DataExploration
 import androidx.compose.material.icons.filled.Verified
 import androidx.compose.material.icons.filled.VerifiedUser
@@ -71,7 +72,7 @@ fun StreetPass() {
                 modifier = Modifier.padding(top = 25.dp)
             ) {
                 Icon(
-                    imageVector = Icons.Filled.VerifiedUser,
+                    imageVector = Icons.Filled.Bookmark,
                     contentDescription = "Passport",
                     tint = Color.White,
                     modifier = Modifier
@@ -88,28 +89,6 @@ fun StreetPass() {
                 )
             }
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center,
-                modifier = Modifier.padding(top = 20.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.BarChart ,
-                    contentDescription = "Passport",
-                    tint = Color.White,
-                    modifier = Modifier
-                        .size(35.dp)
-                        .clickable(onClick = {})
-                )
-                Spacer(modifier = Modifier.width(3.dp))
-
-                Text(
-                    text = "Analytics",
-                    color = Color.White,
-                    fontSize = 25.sp,
-                    fontWeight = FontWeight.Thin
-                )
-            }
 
 
         }

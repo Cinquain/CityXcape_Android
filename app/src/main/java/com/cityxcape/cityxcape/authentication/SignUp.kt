@@ -1,9 +1,12 @@
 package com.cityxcape.cityxcape.authentication
 
 import android.widget.Toast
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,9 +14,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.VerifiedUser
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -41,7 +50,8 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignUp(navController: NavHostController, vm: AuthViewModel) {
+fun SignUp(navController: NavHostController, vm: AuthViewModel, pagerState: PagerState) {
+
     val isVisible = remember { mutableStateOf(false) }
     var context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -129,6 +139,46 @@ fun SignUp(navController: NavHostController, vm: AuthViewModel) {
                 }
             }
 
+            Spacer(Modifier.height(55.dp))
+
+            FilledTonalButton(
+                onClick = {
+                    scope.launch {
+                        val nextPage = pagerState.currentPage + 1
+                        if (nextPage < pagerState.pageCount) {
+                            pagerState.animateScrollToPage(
+                                page = nextPage,
+                                animationSpec = tween(
+                                    durationMillis = 500,
+                                    easing = FastOutSlowInEasing
+                                )
+                            )
+                        }
+                    }
+                },
+                colors = ButtonDefaults.buttonColors(containerColor =
+                    if (AuthService.auth.currentUser == null){
+                        Color.Gray } else {
+                        Color(0xFF00C1EA)}),
+                modifier = Modifier.width(120.dp).height(40.dp)
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.VerifiedUser,
+                        contentDescription = null,
+                        tint = Color.White
+                    )
+                    Spacer(modifier = Modifier.width(3.dp))
+                    Text(
+                        text = "Done",
+                        color = Color.White
+                    )
+                }
+            }
+
         }
     }
 }
@@ -143,5 +193,5 @@ fun SignUp(navController: NavHostController, vm: AuthViewModel) {
 @Preview(showBackground = true)
 @Composable
 fun SignUpPreview() {
-    SignUp(NavHostController(context = LocalContext.current), AuthViewModel())
+    SignUp(NavHostController(context = LocalContext.current), AuthViewModel(), PagerState(currentPage = 0, pageCount = {7}))
 }

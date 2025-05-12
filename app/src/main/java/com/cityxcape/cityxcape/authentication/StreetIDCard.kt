@@ -1,5 +1,6 @@
 package com.cityxcape.cityxcape.authentication
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,17 +36,25 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.cityxcape.cityxcape.components.SelfieBubble
 import com.cityxcape.cityxcape.components.StreetPassBackground
+import com.cityxcape.cityxcape.utilities.CheckInScreen
+import com.cityxcape.cityxcape.utilities.TabScreen
+import kotlinx.coroutines.launch
 
 
 @Composable
-fun StreetIDCard(vm: AuthViewModel) {
+fun StreetIDCard(navController: NavHostController, vm: AuthViewModel) {
+
+    val worlds = vm.selectedWorlds
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+
     Box(Modifier.fillMaxSize()) {
-        val worlds = vm.selectedWorlds
 
         StreetPassBackground()
 
@@ -136,7 +146,15 @@ fun StreetIDCard(vm: AuthViewModel) {
                     .width(200.dp)
                     .height(44.dp)
                     .clickable(onClick = {
-                        vm.saveUsersWorld()
+                        scope.launch {
+                            vm.saveUsersWorld()
+                            val success = vm.validateOnboarding()
+                            if (success) {
+                                navController.navigate(CheckInScreen.Checkin.route)
+                            } else {
+                                Toast.makeText(context, "${vm.errorMessage}", Toast.LENGTH_SHORT)
+                            }
+                        }
                     }),
                 shape = RoundedCornerShape(50)
             ) {
@@ -162,5 +180,5 @@ fun StreetIDCard(vm: AuthViewModel) {
 @Preview(showBackground = true)
 @Composable
 fun StreetIDCardPreview() {
-    StreetIDCard(AuthViewModel())
+    StreetIDCard(NavHostController(context = LocalContext.current), AuthViewModel())
 }

@@ -5,6 +5,8 @@ import android.os.Build
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
@@ -25,6 +28,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,13 +40,14 @@ import androidx.compose.ui.unit.sp
 import com.cityxcape.cityxcape.components.SelfieBubble
 import com.cityxcape.cityxcape.components.StreetPassBackground
 import com.cityxcape.cityxcape.firebase.ImageManager
+import kotlinx.coroutines.launch
 
 
 @Composable
-fun UploadImageView(vm: AuthViewModel) {
+fun UploadImageView(vm: AuthViewModel, pagerState: PagerState) {
 
     val context = LocalContext.current
-
+    val scope = rememberCoroutineScope()
     val imgePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
@@ -146,7 +151,20 @@ fun UploadImageView(vm: AuthViewModel) {
             Spacer(Modifier.height(50.dp))
 
             FilledTonalButton(
-                onClick = {},
+                onClick = {
+                    scope.launch {
+                        val nextPage = pagerState.currentPage + 1
+                        if (nextPage < pagerState.pageCount) {
+                            pagerState.animateScrollToPage(
+                                page = nextPage,
+                                animationSpec = tween(
+                                    durationMillis = 500,
+                                    easing = FastOutSlowInEasing
+                                )
+                            )
+                        }
+                    }
+                },
                 colors = ButtonDefaults.buttonColors(containerColor =
                     if (vm.imageUrl.isEmpty()){ Color.Gray } else {
                         Color(0xFF00C1EA)}),
@@ -178,5 +196,5 @@ fun UploadImageView(vm: AuthViewModel) {
 @Preview(showBackground = true)
 @Composable
 fun UploadImagePreview() {
-    UploadImageView(AuthViewModel())
+    UploadImageView(AuthViewModel(), PagerState(currentPage = 6, pageCount = {7}))
 }

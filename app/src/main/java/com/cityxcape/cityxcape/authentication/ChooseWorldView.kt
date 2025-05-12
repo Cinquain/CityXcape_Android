@@ -1,6 +1,8 @@
 package com.cityxcape.cityxcape.authentication
 
 import android.widget.Toast
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material.Checkbox
 import androidx.compose.material.CheckboxDefaults
 import androidx.compose.material.Icon
@@ -41,11 +44,14 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.cityxcape.cityxcape.components.StreetPassBackground
+import kotlinx.coroutines.launch
 
 
 @Composable
-fun ChooseWorldView(vm: AuthViewModel) {
+fun ChooseWorldView(vm: AuthViewModel, pagerState: PagerState) {
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+
     Box(Modifier.fillMaxSize()) {
 
 
@@ -158,7 +164,20 @@ fun ChooseWorldView(vm: AuthViewModel) {
             Spacer(Modifier.height(50.dp))
 
             FilledTonalButton(
-                onClick = {},
+                onClick = {
+                    scope.launch {
+                        val nextPage = pagerState.currentPage + 1
+                        if (nextPage < pagerState.pageCount) {
+                            pagerState.animateScrollToPage(
+                                page = nextPage,
+                                animationSpec = tween(
+                                    durationMillis = 500,
+                                    easing = FastOutSlowInEasing
+                                )
+                            )
+                        }
+                    }
+                },
                 colors = ButtonDefaults.buttonColors(containerColor =
                     if (vm.selectedWorlds.isEmpty()){ Color.Gray } else {
                         Color(0xFF00C1EA)}),
@@ -190,5 +209,5 @@ fun ChooseWorldView(vm: AuthViewModel) {
 @Preview(showBackground = true)
 @Composable
 fun ChooseWorldPreview() {
-    ChooseWorldView(AuthViewModel())
+    ChooseWorldView(AuthViewModel(), PagerState(currentPage = 0, pageCount = {7}))
 }

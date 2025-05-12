@@ -1,5 +1,7 @@
 package com.cityxcape.cityxcape.authentication
 
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -22,10 +25,10 @@ import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.VerifiedUser
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,17 +38,18 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cityxcape.cityxcape.components.StreetPassBackground
+import kotlinx.coroutines.launch
 
 
 @Composable
-fun CreateUsername(vm: AuthViewModel) {
+fun CreateUsername(vm: AuthViewModel, pagerState: PagerState) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -122,7 +126,19 @@ fun CreateUsername(vm: AuthViewModel) {
 
             FilledTonalButton(
                 onClick = {
-                    vm.setUsernameGender(context)
+                    scope.launch {
+                        vm.setUsernameGender(context)
+                        val nextPage = pagerState.currentPage + 1
+                        if (nextPage < pagerState.pageCount) {
+                            pagerState.animateScrollToPage(
+                                page = nextPage,
+                                animationSpec = tween(
+                                    durationMillis = 500,
+                                    easing = FastOutSlowInEasing
+                                )
+                            )
+                        }
+                    }
                 },
                 colors = ButtonDefaults.buttonColors(containerColor =
                     if (vm.username.count() > 3){ Color(0xFF00C1EA) } else {
@@ -153,5 +169,5 @@ fun CreateUsername(vm: AuthViewModel) {
 @Preview(showBackground = true)
 @Composable
 fun CreateUsernamePreview() {
-    CreateUsername(AuthViewModel())
+    CreateUsername(AuthViewModel(), PagerState(currentPage = 2, pageCount = {7}))
 }

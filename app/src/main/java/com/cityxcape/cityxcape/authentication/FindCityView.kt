@@ -23,18 +23,25 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import android.Manifest
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
+import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.VerifiedUser
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilledTonalButton
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.draw.clip
 import com.cityxcape.cityxcape.components.StreetPassBackground
+import com.cityxcape.cityxcape.utilities.CheckInScreen
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.maps.android.compose.rememberCameraPositionState
@@ -43,18 +50,20 @@ import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.rememberUpdatedMarkerState
+import kotlinx.coroutines.launch
 
 @Composable
-fun FindCityView(vm: AuthViewModel) {
+fun FindCityView(vm: AuthViewModel, pagerState: PagerState) {
 
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
     val fusedLocation = remember { LocationServices.getFusedLocationProviderClient(context) }
     val defaultLocation = rememberUpdatedMarkerState(position = LatLng(40.748692438324866, -73.98566440255941))
 
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(LatLng(44.97263913267112, -93.21218971592698),15f)
     }
-    val location = vm.userLocation
+    var userLocation = vm.userLocation
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
@@ -68,7 +77,7 @@ fun FindCityView(vm: AuthViewModel) {
                     .addOnSuccessListener { location ->
                         location.let {
                             val position = LatLng(it.latitude, it.longitude)
-                            vm.userLocation = position
+                            userLocation = position
                             cameraPositionState.position = CameraPosition.fromLatLngZoom(position, 15f)
                         }
                 }
@@ -123,19 +132,60 @@ fun FindCityView(vm: AuthViewModel) {
                 ) {
 
                 Marker(
-                    state = defaultLocation,
+                    state = if (vm.userLocation != null) {
+                        rememberUpdatedMarkerState(position = LatLng(userLocation?.latitude ?: 0.0, userLocation?.longitude ?: 0.0))
+                    } else {
+                        defaultLocation
+                    },
                     title = "You are here"
                 )
-
-
 
                 }
             }
 
+            Surface(
+                color = Color.Yellow,
+                modifier = Modifier
+                    .width(200.dp)
+                    .height(44.dp)
+                    .clickable(onClick = {
+                        launcher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+                    }),
+                shape = RoundedCornerShape(50)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = "Find Me",
+                        color = Color.Black,
+                        fontWeight = FontWeight.Normal
+                    )
+                }
+            }
+
+
+            Spacer(Modifier.height(45.dp))
+
             FilledTonalButton(
-                onClick = {},
+                onClick = {
+                    scope.launch {
+                        val nextPage = pagerState.currentPage + 1
+                        if (nextPage < pagerState.pageCount) {
+                            pagerState.animateScrollToPage(
+                                page = nextPage,
+                                animationSpec = tween(
+                                    durationMillis = 500,
+                                    easing = FastOutSlowInEasing
+                                )
+                            )
+                        }
+                    }
+                },
                 colors = ButtonDefaults.buttonColors(containerColor =
-                    if (vm.userLocation == null){ Color.Gray } else {
+                    if (vm.city.isEmpty()){ Color.Gray } else {
                         Color(0xFF00C1EA)}),
                 modifier = Modifier.width(120.dp).height(40.dp)
             ) {
@@ -165,5 +215,5 @@ fun FindCityView(vm: AuthViewModel) {
 @Preview(showBackground = true)
 @Composable
 fun FindCityPreview() {
-    FindCityView(AuthViewModel())
+    FindCityView(AuthViewModel(), PagerState(currentPage = 3, pageCount = {7}))
 }

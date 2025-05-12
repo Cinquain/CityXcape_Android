@@ -32,6 +32,8 @@ class AuthViewModel: ViewModel() {
 
     var imageUrl by mutableStateOf("")
 
+    var errorMessage by mutableStateOf("")
+
     var city by mutableStateOf("")
 
     var signUpWithEmail by  mutableStateOf(false)
@@ -90,10 +92,8 @@ class AuthViewModel: ViewModel() {
         DataService.createUser(userId, email)
     }
 
-    fun saveUsersWorld() {
-        viewModelScope.launch {
-            DataService.saveUserWorlds(selectedWorlds)
-        }
+    suspend fun saveUsersWorld() {
+        DataService.saveUserWorlds(selectedWorlds)
     }
 
     fun getCityFromLocation(context: Context, latLng: LatLng)  {
@@ -107,9 +107,38 @@ class AuthViewModel: ViewModel() {
                 }
             }
         } catch (e: IOException) {
-
+            Log.e("Geolocation", "${e.message}")
         }
 
+    }
+
+    fun validateOnboarding() : Boolean {
+        if (AuthService.auth.currentUser == null) {
+            errorMessage = "Please authenticate with Google or Email"
+            return  false
+        }
+
+        if (username.count() < 3) {
+            errorMessage = "Please create a username longer than 3 characters"
+            return false
+        }
+
+        if (city.isEmpty()) {
+            errorMessage = "Please allow CityXcape location permissions"
+            return false
+        }
+
+        if (imageUrl.isEmpty()) {
+            errorMessage = "Please upload a profile picture"
+            return false
+        }
+
+        if (selectedWorlds.isEmpty()) {
+            errorMessage = "Please select three worlds"
+            return false
+        }
+
+        return true
     }
 
 

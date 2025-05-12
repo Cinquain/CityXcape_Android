@@ -33,26 +33,48 @@ fun Onboarding(navController: NavHostController) {
 
     val owner = LocalViewModelStoreOwner.current
     val vm: AuthViewModel = viewModel(owner!!)
-
-    val pages = listOf<@Composable () -> Unit>(
-        {SignUp(navController, vm)},
-        {CreateUsername(vm)},
-        {NotificationsView(vm)},
-        {FindCityView(vm)},
-        {UploadImageView(vm)},
-        {ChooseWorldView(vm)},
-        {StreetIDCard(vm)}
-    )
     val pagerState = rememberPagerState(pageCount = {
-        pages.count()
+        7
     })
+    val pages = listOf<@Composable () -> Unit>(
+        {SignUp(navController, vm,pagerState)},
+        {CreateUsername(vm,pagerState)},
+        {NotificationsView(vm,pagerState)},
+        {FindCityView(vm,pagerState)},
+        {UploadImageView(vm, pagerState)},
+        {ChooseWorldView(vm, pagerState)},
+        {StreetIDCard(navController, vm)}
+    )
+
 
     Column(modifier = Modifier.fillMaxSize()) {
         HorizontalPager(
             state = pagerState,
             verticalAlignment = Alignment.CenterVertically
         ) { index ->
-            pages[index]()
+            when (index) {
+                0 -> {
+                    SignUp(navController, vm, pagerState)
+                }
+                1 -> {
+                    CreateUsername(vm, pagerState)
+                }
+                2 -> {
+                    NotificationsView(vm, pagerState)
+                }
+                3 -> {
+                    FindCityView(vm, pagerState)
+                }
+                4 -> {
+                    UploadImageView(vm, pagerState)
+                }
+                5 -> {
+                    ChooseWorldView(vm, pagerState)
+                }
+                6 -> {
+                    StreetIDCard(navController,vm)
+                }
+            }
         }
     }
 
