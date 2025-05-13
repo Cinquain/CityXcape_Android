@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -26,10 +27,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
+import java.nio.file.WatchEvent
 
 
 @Composable
 fun Onboarding(navController: NavHostController) {
+
 
     val owner = LocalViewModelStoreOwner.current
     val vm: AuthViewModel = viewModel(owner!!)
@@ -50,30 +53,15 @@ fun Onboarding(navController: NavHostController) {
     Column(modifier = Modifier.fillMaxSize()) {
         HorizontalPager(
             state = pagerState,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxSize()
         ) { index ->
-            when (index) {
-                0 -> {
-                    SignUp(navController, vm, pagerState)
-                }
-                1 -> {
-                    CreateUsername(vm, pagerState)
-                }
-                2 -> {
-                    NotificationsView(vm, pagerState)
-                }
-                3 -> {
-                    FindCityView(vm, pagerState)
-                }
-                4 -> {
-                    UploadImageView(vm, pagerState)
-                }
-                5 -> {
-                    ChooseWorldView(vm, pagerState)
-                }
-                6 -> {
-                    StreetIDCard(navController,vm)
-                }
+            Box(
+                modifier = Modifier
+                    .fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                pages[index]()
             }
         }
     }

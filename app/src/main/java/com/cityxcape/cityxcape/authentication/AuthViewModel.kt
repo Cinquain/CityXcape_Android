@@ -4,6 +4,9 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.location.Geocoder
 import android.util.Log
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.pager.PagerState
 import java.util.Locale
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -45,6 +48,7 @@ class AuthViewModel: ViewModel() {
 
     //GPS STATE PROPERTIES
     var userLocation by mutableStateOf<LatLng?>(null)
+
     init {
        viewModelScope.launch {
            fetchAllWorlds()
@@ -86,15 +90,14 @@ class AuthViewModel: ViewModel() {
         }
     }
 
-    suspend fun createUserByEmailAndPassword(context: Context) {
-        val uid = AuthService.signInWithEmail(email, password)
-        val userId: String = uid ?: throw Exception("UID is null")
-        DataService.createUser(userId, email)
+    suspend fun signInOrSignUp(context: Context) : String {
+       return AuthService.signInWithEmail(email, password, context)
     }
 
     suspend fun saveUsersWorld() {
         DataService.saveUserWorlds(selectedWorlds)
     }
+
 
     fun getCityFromLocation(context: Context, latLng: LatLng)  {
         try {

@@ -15,7 +15,9 @@ import android.content.ContentValues.TAG
 import com.cityxcape.cityxcape.R
 import androidx.credentials.Credential
 import androidx.credentials.ClearCredentialStateRequest
+import com.cityxcape.cityxcape.utilities.PreferencesManager
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential.Companion.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
+import com.google.firebase.auth.FirebaseAuthException
 import kotlinx.coroutines.tasks.await
 import java.security.SecureRandom
 
@@ -63,15 +65,18 @@ object AuthService {
         )
     }
 
-    suspend fun handleSignInWithGoogle(credential: Credential) : FirebaseUser? {
+    suspend fun handleSignInWithGoogle(credential: Credential, context: Context) : Boolean {
         // Check if credential is of type Google ID
         if (credential is CustomCredential && credential.type == TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
             val tokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
             val credential = GoogleAuthProvider.getCredential(tokenCredential.id, null)
-            return auth.signInWithCredential(credential).await().user
+            val user = auth.signInWithCredential(credential).await().user
+            val uid = user?.uid ?: throw IllegalStateException("User id is null")
+            val email = user?.email ?: ""
+            return DataService.createUserOrLoginfromGoogle(uid,email,context)
         } else {
             Log.w(TAG, "Credential is not of type Google ID!")
-            return null
+            throw Exception("Credential is not from Google")
         }
     }
 
@@ -85,10 +90,32 @@ object AuthService {
             .joinToString("")
     }
 
-     suspend fun signInWithEmail(email: String, password: String) : String? {
-       val user = auth.signInWithEmailAndPassword(email,password).await().user
-         //check if user exist, if so, login, if not, create account
-       return user?.uid
+     suspend fun signInWithEmail(email: String, password: String, context: Context) : String {
+         return  try {
+             val result = auth.fetchSignInMethodsForEmail(email).await()
+             val methods = result.signInMethods
+
+             if (methods.isNullOrEmpty()) {
+                 val user = auth.createUserWithEmailAndPassword(email, password).await().user
+                 val uid: String = user?.uid ?: throw IllegalStateException("User id is null")
+                 DataService.createUser(uid,email)
+                 PreferencesManager.saveUserId(context,uid)
+                 "Account Successfully Created"
+             } else {
+                 val authUser = auth.signInWithEmailAndPassword(email, password).await().user
+                 val uid: String = authUser?.uid ?: throw IllegalStateException("User id null")
+                 val user = DataService.getUser(uid)
+                 PreferencesManager.setPreferencesFrom(user,context)
+                 "Successfully Signed In"
+             }
+
+         } catch (e: FirebaseAuthException) {
+             Log.e("Auth", "Unexpected error: ${e.message}")
+             throw e
+         } catch (e: Exception) {
+             Log.e("Auth", "Unexpected error: ${e.message}")
+             throw e
+         }
     }
 
 

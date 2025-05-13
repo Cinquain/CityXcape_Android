@@ -1,7 +1,9 @@
 package com.cityxcape.cityxcape
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
@@ -30,8 +32,10 @@ fun HomeView() {
 
     Scaffold(
         bottomBar = { BottomBar(navController = navController)}
-    ) { it
-        BottomNavGraph(navController)
+    ) { innerPadding ->
+        Box(Modifier.padding(innerPadding)) {
+            BottomNavGraph(navController)
+        }
     }
 }
 

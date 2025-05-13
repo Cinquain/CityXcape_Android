@@ -21,39 +21,43 @@ object DataService {
 
     //MARK: USER FUNCTIONS
 
-    suspend fun createUserOrLogin(userId: String?, email: String?, context: Context) : Boolean {
-        val uid = userId ?: throw Exception("Null user id")
-        val email = email ?: throw Exception("Email is null")
+    suspend fun createUserOrLoginfromGoogle(userId: String, email: String, context: Context) : Boolean {
+        val snapshot = db.collection("users").document(userId).get().await()
+        val data = snapshot.data
 
-         db.collection("users").document(uid).get().await().data.let { document ->
-             val data = document as Map<String, Any?>
-             val user = User.CreateFromMap(data)
-             PreferencesManager.setPreferencesFrom(user, context)
-             return false
+        return if (data != null) {
+            val user = User.CreateFromMap(data)
+            PreferencesManager.setPreferencesFrom(user, context)
+            false
+        } else {
+            createUser(userId, email)
+            PreferencesManager.saveUserId(context,userId)
+            return true
         }
-        createUser(uid, email)
-        return true
     }
 
     suspend fun createUser(uid: String, email: String) {
-
         val data: Map<String, Any> = mapOf(
             "id" to uid,
             "email" to email,
             "streetcred" to 1,
             "timestamp" to Timestamp
         )
+        db.collection("users").document(uid).set(data).await()
+    }
 
+    suspend fun getUser(uid: String) : User {
         try {
-            db.collection("users").document(uid).set(data).await()
-            Log.d("Firestore", "User successfully created!")
+            val document = db.collection("users").document(uid).get().await()
+            val data = document.data ?: throw NoSuchElementException("No user found for this uid")
+            return User.CreateFromMap(data)
         } catch (e: Exception) {
-            Log.e("Firestore", "Error creating user", e)
+            throw e
         }
     }
 
     suspend fun saveNameGender(data: Map<String, Any>) {
-        val uid: String = AuthService?.uid ?: return
+        val uid: String = AuthService?.uid ?: throw NoSuchElementException("User is not authenticated")
         db.collection("users").document(uid).update(data).await()
     }
 

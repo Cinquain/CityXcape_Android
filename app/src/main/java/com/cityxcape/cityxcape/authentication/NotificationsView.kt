@@ -33,8 +33,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import com.cityxcape.cityxcape.R
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -80,7 +80,7 @@ fun NotificationsView(vm: AuthViewModel, pagerState: PagerState) {
 
 
             Image(
-                painter = painterResource(id = com.cityxcape.cityxcape.R.drawable.notifications),
+                painter = painterResource(id = R.drawable.notifications),
                 contentDescription = null,
                 modifier = Modifier.size(100.dp)
             )

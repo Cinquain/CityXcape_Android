@@ -166,16 +166,22 @@ fun ChooseWorldView(vm: AuthViewModel, pagerState: PagerState) {
             FilledTonalButton(
                 onClick = {
                     scope.launch {
-                        val nextPage = pagerState.currentPage + 1
-                        if (nextPage < pagerState.pageCount) {
-                            pagerState.animateScrollToPage(
-                                page = nextPage,
-                                animationSpec = tween(
-                                    durationMillis = 500,
-                                    easing = FastOutSlowInEasing
+                        try {
+                            vm.saveUsersWorld()
+                            val nextPage = pagerState.currentPage + 1
+                            if (nextPage < pagerState.pageCount) {
+                                pagerState.animateScrollToPage(
+                                    page = nextPage,
+                                    animationSpec = tween(
+                                        durationMillis = 500,
+                                        easing = FastOutSlowInEasing
+                                    )
                                 )
-                            )
+                            }
+                        } catch (e: Exception) {
+                            Toast.makeText(context, "${e.message}", Toast.LENGTH_SHORT).show()
                         }
+
                     }
                 },
                 colors = ButtonDefaults.buttonColors(containerColor =

@@ -45,6 +45,7 @@ import com.cityxcape.cityxcape.components.StreetPassBackground
 import com.cityxcape.cityxcape.firebase.AuthService
 import com.cityxcape.cityxcape.firebase.DataService
 import com.cityxcape.cityxcape.utilities.CheckInScreen
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
@@ -105,10 +106,11 @@ fun SignUp(navController: NavHostController, vm: AuthViewModel, pagerState: Page
                     scope.launch {
                         try {
                             val result = AuthService.getCredentialRequest(context)
-                            val user = AuthService.handleSignInWithGoogle(result.credential)
-                            val isNewUser = DataService.createUserOrLogin(user?.uid, user?.email, context)
+                            val isNewUser = AuthService.handleSignInWithGoogle(result.credential, context)
                             if (isNewUser) {
                                 Toast.makeText(context, "Account Created Successfully", Toast.LENGTH_SHORT).show()
+                                delay(2500)
+                                nextPage(pagerState)
                             } else {
                                 Toast.makeText(context, "Signed In Successfully", Toast.LENGTH_SHORT).show()
                                 navController.navigate(CheckInScreen.Checkin.route)
@@ -144,16 +146,7 @@ fun SignUp(navController: NavHostController, vm: AuthViewModel, pagerState: Page
             FilledTonalButton(
                 onClick = {
                     scope.launch {
-                        val nextPage = pagerState.currentPage + 1
-                        if (nextPage < pagerState.pageCount) {
-                            pagerState.animateScrollToPage(
-                                page = nextPage,
-                                animationSpec = tween(
-                                    durationMillis = 500,
-                                    easing = FastOutSlowInEasing
-                                )
-                            )
-                        }
+                        nextPage(pagerState)
                     }
                 },
                 colors = ButtonDefaults.buttonColors(containerColor =
@@ -184,7 +177,18 @@ fun SignUp(navController: NavHostController, vm: AuthViewModel, pagerState: Page
 }
 
 
-
+suspend fun nextPage(pagerState: PagerState) {
+    val nextPage = pagerState.currentPage + 1
+    if (nextPage < pagerState.pageCount) {
+        pagerState.animateScrollToPage(
+            page = nextPage,
+            animationSpec = tween(
+                durationMillis = 500,
+                easing = FastOutSlowInEasing
+            )
+        )
+    }
+}
 
 
 

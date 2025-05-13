@@ -30,6 +30,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.cityxcape.cityxcape.components.StreetPassBackground
 import kotlinx.coroutines.launch
 import android.widget.Toast
+import com.cityxcape.cityxcape.firebase.DataService
+import kotlinx.coroutines.delay
 
 @Composable
 fun SignUpWithEmail(vm: AuthViewModel) {
@@ -66,7 +68,7 @@ fun SignUpWithEmail(vm: AuthViewModel) {
             OutlinedTextField(
                 value = vm.email,
                 onValueChange = { vm.email = it},
-                modifier = Modifier.width(300.dp).height(40.dp),
+                modifier = Modifier.width(300.dp).height(60.dp),
                 textStyle = TextStyle(fontWeight = FontWeight.Light, fontSize = 22.sp),
                 shape = RoundedCornerShape(50),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -79,7 +81,7 @@ fun SignUpWithEmail(vm: AuthViewModel) {
             OutlinedTextField(
                 value = vm.password,
                 onValueChange = { vm.password = it},
-                modifier = Modifier.width(300.dp).height(40.dp),
+                modifier = Modifier.width(300.dp).height(60.dp),
                 textStyle = TextStyle(fontWeight = FontWeight.Light, fontSize = 22.sp),
                 shape = RoundedCornerShape(50),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -93,8 +95,9 @@ fun SignUpWithEmail(vm: AuthViewModel) {
                 onClick = {
                     scope.launch {
                         try {
-                            vm.createUserByEmailAndPassword(context)
-                            Toast.makeText(context, "Account Created", Toast.LENGTH_SHORT).show()
+                            val result = vm.signInOrSignUp(context)
+                            Toast.makeText(context, result, Toast.LENGTH_SHORT).show()
+                            delay(2500)
                             vm.signUpWithEmail = false
                         } catch (e: Exception) {
                             Toast.makeText(context, "${e.message}", Toast.LENGTH_SHORT).show()

@@ -41,7 +41,6 @@ import androidx.compose.material3.FilledTonalButton
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.draw.clip
 import com.cityxcape.cityxcape.components.StreetPassBackground
-import com.cityxcape.cityxcape.utilities.CheckInScreen
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.maps.android.compose.rememberCameraPositionState
@@ -77,6 +76,7 @@ fun FindCityView(vm: AuthViewModel, pagerState: PagerState) {
                     .addOnSuccessListener { location ->
                         location.let {
                             val position = LatLng(it.latitude, it.longitude)
+                            vm.getCityFromLocation(context, position)
                             userLocation = position
                             cameraPositionState.position = CameraPosition.fromLatLngZoom(position, 15f)
                         }

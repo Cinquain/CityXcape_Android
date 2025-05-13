@@ -44,6 +44,7 @@ import com.cityxcape.cityxcape.components.SelfieBubble
 import com.cityxcape.cityxcape.components.StreetPassBackground
 import com.cityxcape.cityxcape.utilities.CheckInScreen
 import com.cityxcape.cityxcape.utilities.TabScreen
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
@@ -147,12 +148,13 @@ fun StreetIDCard(navController: NavHostController, vm: AuthViewModel) {
                     .height(44.dp)
                     .clickable(onClick = {
                         scope.launch {
-                            vm.saveUsersWorld()
                             val success = vm.validateOnboarding()
                             if (success) {
+                                Toast.makeText(context, "Successfully created StreetPass", Toast.LENGTH_SHORT).show()
+                                delay(2000)
                                 navController.navigate(CheckInScreen.Checkin.route)
                             } else {
-                                Toast.makeText(context, "${vm.errorMessage}", Toast.LENGTH_SHORT)
+                                Toast.makeText(context, vm.errorMessage, Toast.LENGTH_SHORT).show()
                             }
                         }
                     }),
