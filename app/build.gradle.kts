@@ -131,6 +131,7 @@ dependencies {
     implementation("com.google.accompanist:accompanist-pager:0.34.0")
     implementation("com.google.accompanist:accompanist-pager-indicators:0.34.0")
     implementation(platform("androidx.compose:compose-bom:2025.02.00"))
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.36.0")
 
     //Google BarCode Scanning ML Kit
     implementation("com.google.mlkit:barcode-scanning:17.3.0")

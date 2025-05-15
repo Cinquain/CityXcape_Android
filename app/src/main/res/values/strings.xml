@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">CityXcape</string>
     <string name="web_client_id">32981840497-63fm9lq9otcd7igqv1ib6othrb6ntinr.apps.googleusercontent.com</string>
+    <string name="google_maps_key">AIzaSyBZ8i07wILjsXXUZXaLMdi-IuiZ06ccPiI</string>
 </resources>

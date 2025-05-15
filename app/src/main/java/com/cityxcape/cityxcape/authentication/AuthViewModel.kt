@@ -48,6 +48,7 @@ class AuthViewModel: ViewModel() {
 
     //GPS STATE PROPERTIES
     var userLocation by mutableStateOf<LatLng?>(null)
+        private  set
 
     init {
        viewModelScope.launch {
@@ -60,6 +61,9 @@ class AuthViewModel: ViewModel() {
         _worlds.addAll(fetchedWorlds)
     }
 
+    fun updateLocation(location: LatLng) {
+        userLocation = location
+    }
 
     fun setUsernameGender(context: Context) {
         val data: Map<String, Any> = mapOf(
@@ -90,7 +94,7 @@ class AuthViewModel: ViewModel() {
         }
     }
 
-    suspend fun signInOrSignUp(context: Context) : String {
+    suspend fun signInOrSignUp(context: Context) : Boolean {
        return AuthService.signInWithEmail(email, password, context)
     }
 

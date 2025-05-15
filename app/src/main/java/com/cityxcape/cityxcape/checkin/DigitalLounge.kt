@@ -1,5 +1,6 @@
 package com.cityxcape.cityxcape.checkin
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -15,7 +17,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Divider
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Doorbell
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -36,6 +41,7 @@ import androidx.navigation.compose.rememberNavController
 import com.cityxcape.cityxcape.components.UserBubble
 import com.cityxcape.cityxcape.models.User
 import com.cityxcape.cityxcape.streetpass.PublicStreetPass
+import java.nio.file.WatchEvent
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -62,7 +68,31 @@ fun DigitalLounge(navController: NavHostController, vm: CheckinViewModel) {
             }
         }
 
-        Spacer(modifier = Modifier.fillMaxSize())
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier.padding(bottom = 18.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Doorbell,
+                contentDescription = null,
+                tint = Color.White,
+                modifier = Modifier
+                    .size(45.dp)
+                    .clickable(onClick = {vm.checkOut()})
+            )
+            Text(
+                text = "Checkout",
+                color = Color.White,
+                fontWeight = FontWeight.Light,
+                fontSize = 18.sp
+            )
+        }
+
+
 
         if (vm.showSP) {
 
@@ -79,6 +109,8 @@ fun DigitalLounge(navController: NavHostController, vm: CheckinViewModel) {
         LaunchedEffect(Unit) {
             sheetState.expand()
         }
+
+
 
 
     }

@@ -15,20 +15,30 @@ class CheckinViewModel: ViewModel() {
     val users: List<User> = _users
 
     var showSP by mutableStateOf(false)
-    private set
+        private set
 
     var currentUser by mutableStateOf<User?>(null)
-    private set
+        private set
 
+    var isCheckedIn by mutableStateOf(false)
+        private set
 
-    init {
-        testMethod()
-    }
+init {
+    testMethod()
+}
 
     fun testMethod() {
         User.sampleList().forEach { user ->
             _users.add(user)
         }
+    }
+
+    fun checkIn() {
+        isCheckedIn = true
+    }
+
+    fun checkOut() {
+        isCheckedIn = false
     }
 
     fun showStreetPass() {

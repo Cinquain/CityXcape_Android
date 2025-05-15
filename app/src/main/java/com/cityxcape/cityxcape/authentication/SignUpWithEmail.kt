@@ -30,11 +30,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.cityxcape.cityxcape.components.StreetPassBackground
 import kotlinx.coroutines.launch
 import android.widget.Toast
+import androidx.navigation.NavHostController
 import com.cityxcape.cityxcape.firebase.DataService
+import com.cityxcape.cityxcape.utilities.CheckInScreen
 import kotlinx.coroutines.delay
 
 @Composable
-fun SignUpWithEmail(vm: AuthViewModel) {
+fun SignUpWithEmail(navController: NavHostController, vm: AuthViewModel) {
+
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     Box(
@@ -95,10 +98,18 @@ fun SignUpWithEmail(vm: AuthViewModel) {
                 onClick = {
                     scope.launch {
                         try {
-                            val result = vm.signInOrSignUp(context)
-                            Toast.makeText(context, result, Toast.LENGTH_SHORT).show()
-                            delay(2500)
-                            vm.signUpWithEmail = false
+                            val isNewUSer = vm.signInOrSignUp(context)
+                            if (isNewUSer) {
+                                Toast.makeText(context, "Account Created Successfully", Toast.LENGTH_SHORT).show()
+                                delay(2000)
+                                vm.signUpWithEmail = false
+                            } else {
+                                Toast.makeText(context, "Successfully Signed In", Toast.LENGTH_SHORT).show()
+                                delay(2500)
+                                navController.navigate(CheckInScreen.Checkin.route)
+                                vm.signUpWithEmail = false
+                            }
+
                         } catch (e: Exception) {
                             Toast.makeText(context, "${e.message}", Toast.LENGTH_SHORT).show()
                         }
@@ -131,5 +142,5 @@ fun SignUpWithEmail(vm: AuthViewModel) {
 @Preview(showBackground = true)
 @Composable
 fun SignUpWithEmailPreview() {
-    SignUpWithEmail(AuthViewModel())
+    SignUpWithEmail(NavHostController(context = LocalContext.current), AuthViewModel())
 }

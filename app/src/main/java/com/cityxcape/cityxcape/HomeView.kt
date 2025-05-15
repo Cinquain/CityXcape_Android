@@ -2,6 +2,9 @@ package com.cityxcape.cityxcape
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -17,23 +20,43 @@ import androidx.navigation.NavDestination
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.cityxcape.cityxcape.utilities.BottomNavGraph
 import com.cityxcape.cityxcape.utilities.TabScreen
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 
 @Composable
 fun HomeView() {
+
+    val systemUiController = rememberSystemUiController()
+
+    SideEffect {
+        systemUiController.setSystemBarsColor(
+            color = Color.Transparent,
+            darkIcons = false
+        )
+    }
 
     val navController = rememberNavController()
 
     Scaffold(
         bottomBar = { BottomBar(navController = navController)}
     ) { innerPadding ->
-        Box(Modifier.padding(innerPadding)) {
+        Box(Modifier
+            .padding(
+                start = innerPadding.calculateStartPadding(LayoutDirection.Ltr),
+                end = innerPadding.calculateEndPadding(LayoutDirection.Ltr),
+                bottom = innerPadding.calculateBottomPadding()
+            )
+            .consumeWindowInsets(innerPadding)
+        )
+
+        {
             BottomNavGraph(navController)
         }
     }

@@ -57,12 +57,9 @@ fun FindCityView(vm: AuthViewModel, pagerState: PagerState) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val fusedLocation = remember { LocationServices.getFusedLocationProviderClient(context) }
-    val defaultLocation = rememberUpdatedMarkerState(position = LatLng(40.748692438324866, -73.98566440255941))
-
-    val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(LatLng(44.97263913267112, -93.21218971592698),15f)
-    }
     var userLocation = vm.userLocation
+
+
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
@@ -76,9 +73,8 @@ fun FindCityView(vm: AuthViewModel, pagerState: PagerState) {
                     .addOnSuccessListener { location ->
                         location.let {
                             val position = LatLng(it.latitude, it.longitude)
+                            vm.updateLocation(position)
                             vm.getCityFromLocation(context, position)
-                            userLocation = position
-                            cameraPositionState.position = CameraPosition.fromLatLngZoom(position, 15f)
                         }
                 }
 
@@ -118,28 +114,31 @@ fun FindCityView(vm: AuthViewModel, pagerState: PagerState) {
                 fontSize = 28.sp
             )
 
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(if (userLocation != null) {10.dp} else {400.dp}))
 
-            Box(
-                modifier = Modifier
-                    .padding(15.dp)
-                    .clip(RoundedCornerShape(25.dp))
-            ) {
-                GoogleMap(
-                    modifier = Modifier.fillMaxWidth().height(400.dp),
-                    cameraPositionState = cameraPositionState,
-                    properties = MapProperties(isMyLocationEnabled = false)
+
+            if (userLocation != null) {
+
+                val cameraPositionState = rememberCameraPositionState {
+                    position = CameraPosition.fromLatLngZoom(userLocation,15f)
+                }
+                Box(
+                    modifier = Modifier
+                        .padding(15.dp)
+                        .clip(RoundedCornerShape(25.dp))
                 ) {
+                    GoogleMap(
+                        modifier = Modifier.fillMaxWidth().height(400.dp),
+                        cameraPositionState = cameraPositionState,
+                        properties = MapProperties(isMyLocationEnabled = false)
+                    ) {
 
-                Marker(
-                    state = if (vm.userLocation != null) {
-                        rememberUpdatedMarkerState(position = LatLng(userLocation?.latitude ?: 0.0, userLocation?.longitude ?: 0.0))
-                    } else {
-                        defaultLocation
-                    },
-                    title = "You are here"
-                )
+                        Marker(
+                            state = rememberUpdatedMarkerState(position = userLocation),
+                            title = "You are here"
+                        )
 
+                    }
                 }
             }
 

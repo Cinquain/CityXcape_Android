@@ -13,12 +13,11 @@ import com.cityxcape.cityxcape.utilities.CheckInScreen
 
 
 @Composable
-fun CheckinNavGraph() {
+fun CheckinNavGraph(vm: CheckinViewModel) {
 
     val navController = rememberNavController()
 
 
-    val vm: CheckinViewModel = viewModel()
 
     NavHost(
         navController = navController,

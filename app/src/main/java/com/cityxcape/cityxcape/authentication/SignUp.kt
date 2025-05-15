@@ -137,7 +137,7 @@ fun SignUp(navController: NavHostController, vm: AuthViewModel, pagerState: Page
                     onDismissRequest = { vm.signUpWithEmail = false },
                     dragHandle = null
                 ) {
-                    SignUpWithEmail(vm)
+                    SignUpWithEmail(navController, vm)
                 }
             }
 

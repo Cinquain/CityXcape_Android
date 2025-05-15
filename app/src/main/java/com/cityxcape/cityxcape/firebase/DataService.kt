@@ -20,7 +20,6 @@ object DataService {
     }
 
     //MARK: USER FUNCTIONS
-
     suspend fun createUserOrLoginfromGoogle(userId: String, email: String, context: Context) : Boolean {
         val snapshot = db.collection("users").document(userId).get().await()
         val data = snapshot.data
@@ -41,7 +40,7 @@ object DataService {
             "id" to uid,
             "email" to email,
             "streetcred" to 1,
-            "timestamp" to Timestamp
+            "timestamp" to Timestamp.now()
         )
         db.collection("users").document(uid).set(data).await()
     }

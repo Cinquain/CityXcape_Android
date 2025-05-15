@@ -90,7 +90,7 @@ object AuthService {
             .joinToString("")
     }
 
-     suspend fun signInWithEmail(email: String, password: String, context: Context) : String {
+     suspend fun signInWithEmail(email: String, password: String, context: Context) : Boolean {
          return  try {
              val result = auth.fetchSignInMethodsForEmail(email).await()
              val methods = result.signInMethods
@@ -100,13 +100,14 @@ object AuthService {
                  val uid: String = user?.uid ?: throw IllegalStateException("User id is null")
                  DataService.createUser(uid,email)
                  PreferencesManager.saveUserId(context,uid)
-                 "Account Successfully Created"
+                 return true
              } else {
                  val authUser = auth.signInWithEmailAndPassword(email, password).await().user
                  val uid: String = authUser?.uid ?: throw IllegalStateException("User id null")
                  val user = DataService.getUser(uid)
                  PreferencesManager.setPreferencesFrom(user,context)
                  "Successfully Signed In"
+                 return false
              }
 
          } catch (e: FirebaseAuthException) {
