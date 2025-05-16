@@ -90,7 +90,7 @@ object PreferencesManager {
     suspend fun setPreferencesFrom(user: User, context: Context) {
         saveUsername(context, user.username)
         saveUserId(context, user.id)
-        saveStreetCred(context, user.streetCred)
+        saveStreetCred(context, user.streetcred)
         saveImageUrl(context, user.imageUrl)
     }
 

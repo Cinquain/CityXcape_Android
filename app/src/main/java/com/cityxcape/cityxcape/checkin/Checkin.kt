@@ -44,11 +44,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import kotlinx.coroutines.launch
 
 @Composable
 fun Checkin(navController: NavHostController, vm: CheckinViewModel) {
     val context = LocalContext.current
-
+    val scope = rememberCoroutineScope()
     var showScan by remember { mutableStateOf(false) }
     var showAlert by remember { mutableStateOf(false) }
     var requestPermision by remember { mutableStateOf(false) }
@@ -65,9 +66,12 @@ fun Checkin(navController: NavHostController, vm: CheckinViewModel) {
         verticalArrangement = Arrangement.Top
     ) {
        if (showScan) {
-           QRCodeScanner { code ->
+           QRCodeScanner { result ->
+               val code = "27dwRVATDnUYxRsK0XVn"
+               scope.launch {
+                   vm.handleScan(code)
+               }
                showScan = false
-               vm.checkIn()
            }
        } else if (vm.isCheckedIn) {
            DigitalLounge(navController,vm)
@@ -101,7 +105,7 @@ fun Checkin(navController: NavHostController, vm: CheckinViewModel) {
                        showAlert = !showAlert
                    } else {
                        if (hasPermission) {
-                           showScan = !showScan
+                           showScan = true
                        } else {
                            requestPermision = true
                        }

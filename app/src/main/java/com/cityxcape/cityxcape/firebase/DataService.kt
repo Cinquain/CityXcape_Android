@@ -3,21 +3,32 @@ package com.cityxcape.cityxcape.firebase
 import android.content.Context
 import android.nfc.Tag
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
+import com.cityxcape.cityxcape.models.Location
 import com.cityxcape.cityxcape.models.User
 import com.cityxcape.cityxcape.models.World
 import com.cityxcape.cityxcape.utilities.PreferencesManager
 import com.google.android.gms.auth.api.Auth
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.AuthResult
+import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import kotlinx.coroutines.tasks.await
+import androidx.compose.runtime.*
+import java.util.Date
 
 object DataService {
 
     private  val db: FirebaseFirestore by lazy {
         FirebaseFirestore.getInstance()
     }
+
+    private var users = mutableListOf<User>()
+
+    var checkinListener: ListenerRegistration? = null
+
 
     //MARK: USER FUNCTIONS
     suspend fun createUserOrLoginfromGoogle(userId: String, email: String, context: Context) : Boolean {
@@ -53,6 +64,11 @@ object DataService {
         } catch (e: Exception) {
             throw e
         }
+    }
+
+    suspend fun getUserCredentials() : User {
+        val uid: String = AuthService.uid ?: throw NoSuchElementException("No user id found")
+        return getUser(uid)
     }
 
     suspend fun saveNameGender(data: Map<String, Any>) {
@@ -126,6 +142,80 @@ object DataService {
             worlds.add(world)
         }
         return worlds
+    }
+
+
+    //MARK: LOCATION FUNCTIONS
+
+    suspend fun getLocationFrom(spotId: String) : Location {
+        try {
+            val document = db.collection("locations").document(spotId).get().await()
+            val data = document.data ?: throw NoSuchElementException("No Location Found for this Id")
+            return Location.createFromMap(data)
+        } catch (e: Exception) {
+            throw  e
+        }
+    }
+
+    fun getCheckedInUsers(spotId: String, completion: (Result<List<User>>) -> Unit) {
+        val uid: String = AuthService.uid ?: run {
+            completion(Result.failure(NoSuchElementException("No user id found")))
+            return
+        }
+        val reference = db.collection("locations").document(spotId).collection("checkins")
+
+        checkinListener?.remove()
+        checkinListener = reference.addSnapshotListener { snapshot, error ->
+
+
+            if (error != null) {
+                completion(Result.failure(error))
+                return@addSnapshotListener
+            }
+
+            val snapshot = snapshot ?: run {
+                completion(Result.failure(IllegalStateException("Empty data snapshot")))
+                return@addSnapshotListener
+            }
+
+            var changed = false
+           for (change in snapshot.documentChanges) {
+               val docId = change.document.id
+               if (docId == uid) continue
+
+               if (change.type == DocumentChange.Type.ADDED) {
+                   val data = change.document.data
+                   val user = User.CreateFromMap(data)
+                   users.add(user)
+                   changed = true
+               }
+
+               if (change.type == DocumentChange.Type.REMOVED) {
+                    users.removeIf { it.id == docId }
+                   changed = true
+               }
+           }
+            if (changed) {
+                completion(Result.success(users))
+            }
+
+
+       }
+    }
+
+    suspend fun registerUserCheckin(spotId: String, user: User) {
+        val reference = db.collection("locations").document(spotId).collection("checkins")
+        val userRef = reference.document(user.id)
+
+        Log.d("Firebase", "user world is ${user.worlds}")
+        userRef.set(user).await()
+
+        val expiresAt = Timestamp(Date(System.currentTimeMillis() + 2 * 60 * 60 * 1000))
+        val ttlData = mapOf(
+            "expiresAt" to expiresAt
+        )
+        userRef.update(ttlData).await()
+
     }
 
 
