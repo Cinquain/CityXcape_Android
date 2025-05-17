@@ -40,6 +40,7 @@ import com.cityxcape.cityxcape.components.AlertBox
 import com.cityxcape.cityxcape.utilities.CheckInScreen
 import com.cityxcape.cityxcape.utilities.QRCodeScanner
 import android.Manifest
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -74,8 +75,11 @@ fun Checkin(navController: NavHostController, vm: CheckinViewModel) {
                showScan = false
            }
        } else if (vm.isCheckedIn) {
-           DigitalLounge(navController,vm)
+           vm.socialHub?.let { spot ->
+               DigitalLounge(navController, spot, vm)
+           }
        } else {
+
 
 
            CheckinHeader()
@@ -144,6 +148,8 @@ fun Checkin(navController: NavHostController, vm: CheckinViewModel) {
                 onGranted = {}
             )
         }
+
+
 
        }
 

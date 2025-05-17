@@ -104,7 +104,7 @@ object DataService {
 
     suspend fun saveUserWorlds(worlds: List<World>) {
         val uid: String = AuthService?.uid ?: return
-        var dataList = mutableListOf<Map<String, Any>>()
+        var dataList = mutableListOf<Map<String, Map<String, Any>>>()
         worlds.forEach { world ->
            val innermap = mapOf<String, Any>(
                "worldId" to world.id,
@@ -216,6 +216,16 @@ object DataService {
         )
         userRef.update(ttlData).await()
 
+    }
+
+    suspend fun checkout(spotId: String) {
+        val uid : String = AuthService.uid ?: throw NoSuchElementException("No user id found!")
+        val reference = db.collection("locations")
+            .document(spotId)
+            .collection("checkins")
+            .document(uid)
+        reference.delete().await()
+        checkinListener?.remove()
     }
 
 

@@ -27,9 +27,6 @@ fun CheckinNavGraph(vm: CheckinViewModel) {
             Checkin(navController, vm)
         }
 
-        composable(route = CheckInScreen.Lounge.route) {
-            DigitalLounge(navController, vm)
-        }
 
         composable(route = CheckInScreen.SignUp.route){
             Onboarding(navController)

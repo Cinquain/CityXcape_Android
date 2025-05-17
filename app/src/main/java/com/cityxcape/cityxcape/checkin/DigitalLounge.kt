@@ -27,6 +27,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
+import com.cityxcape.cityxcape.R
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.unit.dp
@@ -35,18 +36,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.cityxcape.cityxcape.components.SelfieBubble
 import com.cityxcape.cityxcape.components.UserBubble
+import com.cityxcape.cityxcape.models.Location
 import com.cityxcape.cityxcape.models.User
 import com.cityxcape.cityxcape.streetpass.PublicStreetPass
-import java.nio.file.WatchEvent
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DigitalLounge(navController: NavHostController, vm: CheckinViewModel) {
+fun DigitalLounge(navController: NavHostController, spot: Location, vm: CheckinViewModel) {
     val sheetState = rememberModalBottomSheetState( skipPartiallyExpanded = true)
     Column(
         modifier = Modifier
@@ -58,15 +61,20 @@ fun DigitalLounge(navController: NavHostController, vm: CheckinViewModel) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Header()
+        Header(spot)
 
         Spacer(modifier = Modifier.height(50.dp))
 
-        LazyColumn {
-            items(vm.users) { user ->
-                UserRow(user, vm)
+        if (vm.users.isEmpty()) {
+            EmptyState(vm)
+        } else {
+            LazyColumn {
+                items(vm.users) { user ->
+                    UserRow(user, vm)
+                }
             }
         }
+
 
 
         Spacer(modifier = Modifier.weight(1f))
@@ -82,7 +90,7 @@ fun DigitalLounge(navController: NavHostController, vm: CheckinViewModel) {
                 tint = Color.White,
                 modifier = Modifier
                     .size(45.dp)
-                    .clickable(onClick = {vm.checkOut()})
+                    .clickable(onClick = {vm.checkOut(spot.id)})
             )
             Text(
                 text = "Checkout",
@@ -91,8 +99,6 @@ fun DigitalLounge(navController: NavHostController, vm: CheckinViewModel) {
                 fontSize = 18.sp
             )
         }
-
-
 
         if (vm.showSP) {
 
@@ -118,24 +124,60 @@ fun DigitalLounge(navController: NavHostController, vm: CheckinViewModel) {
 
 
 @Composable
-fun Header() {
+fun Header(spot: Location) {
     Row(
         modifier = Modifier.fillMaxWidth().padding(top = 10.dp, start = 5.dp),
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Image(
-            painter = painterResource(id = com.cityxcape.cityxcape.R.drawable.dotperson),
+            painter = painterResource(id = R.drawable.dotperson),
             contentDescription = "Location Marker",
             contentScale = ContentScale.Fit,
             modifier = Modifier.height(40.dp)
         )
 
         Text(
-            text = "Parlour Bar",
+            text = spot.name,
             fontSize = 20.sp,
             fontWeight = FontWeight.Thin,
             color = Color.White
+        )
+
+    }
+}
+
+@Composable
+fun EmptyState(vm: CheckinViewModel) {
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(Modifier.height(125.dp))
+
+        SelfieBubble(
+            imageUrl = vm.currentUser?.imageUrl ?: "",
+            size = 275.dp,
+            onClick = {}
+        )
+
+        Spacer(Modifier.height(8.dp))
+
+        Text(
+            text = "First One Here!",
+            color = Color.White,
+            fontSize = 22.sp,
+            fontWeight = FontWeight.Light
+        )
+
+        Spacer(Modifier.height(4.dp))
+
+        Text(
+            text = "Please wait for more \n people to check in ",
+            color = Color.White,
+            textAlign = TextAlign.Center,
+            fontSize = 15.sp,
+            fontWeight = FontWeight.Light
         )
 
     }
@@ -212,6 +254,7 @@ fun UserRow(user: User, vm: CheckinViewModel) {
 fun DigitalLoungePreview() {
     DigitalLounge(
         navController = rememberNavController(),
+        spot = Location.demo(),
         vm = CheckinViewModel()
     )
 }

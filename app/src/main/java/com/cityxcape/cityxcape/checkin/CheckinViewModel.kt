@@ -11,6 +11,7 @@ import androidx.lifecycle.viewModelScope
 import com.cityxcape.cityxcape.firebase.DataService
 import com.cityxcape.cityxcape.models.Location
 import com.cityxcape.cityxcape.models.User
+import com.cityxcape.cityxcape.utilities.PreferencesManager
 import kotlinx.coroutines.launch
 
 
@@ -37,6 +38,7 @@ class CheckinViewModel: ViewModel() {
     var socialHub by mutableStateOf<Location?>(null)
         private set
 
+
     var errorMessage by mutableStateOf<String?>(null)
 
 
@@ -55,8 +57,10 @@ class CheckinViewModel: ViewModel() {
 
     suspend fun checkin(spotId: String) : Location{
         val location = DataService.getLocationFrom(spotId)
+        socialHub = location
         startListeningToUsers(spotId)
         val user = DataService.getUserCredentials()
+        currentUser = user
         DataService.registerUserCheckin(spotId, user)
         //Start a session manager
 
@@ -78,7 +82,10 @@ class CheckinViewModel: ViewModel() {
     }
 
 
-    fun checkOut() {
+    fun checkOut(spotId: String) {
+        viewModelScope.launch {
+            DataService.checkout(spotId)
+        }
         isCheckedIn = false
     }
 
